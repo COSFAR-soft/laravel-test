@@ -4,9 +4,12 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PageRenderTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_login_page_is_accessible(): void
     {
         $response = $this->get('/login');
@@ -32,5 +35,33 @@ class PageRenderTest extends TestCase
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertStatus(200);
+        $response->assertSee('Статистика');
+    }
+
+    public function test_tests_page_accessible_for_authenticated_user(): void
+    {
+        $user = User::factory()->create();
+
+        // Создаем тест
+        $test = \App\Models\Test::create([
+            'title' => 'Тест для проверки',
+            'description' => 'Описание теста',
+            'time_limit' => 30,
+            'passing_score' => 70,
+            'is_published' => true,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('tests.index'));
+        $response->assertStatus(200);
+        $response->assertSee('Доступные тесты по Laravel');
+    }
+
+    public function test_history_page_accessible_for_authenticated_user(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('tests.history'));
+        $response->assertStatus(200);
+        $response->assertSee('История тестирования');
     }
 }

@@ -16,7 +16,9 @@ class PasswordResetTest extends TestCase
     {
         $response = $this->get('/forgot-password');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertSee('Забыли пароль?')
+            ->assertSee('Email');
     }
 
     public function test_reset_password_link_can_be_requested()
@@ -25,8 +27,9 @@ class PasswordResetTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->post('/forgot-password', ['email' => $user->email]);
+        $response = $this->post('/forgot-password', ['email' => $user->email]);
 
+        $response->assertSessionHas('status');
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
@@ -39,9 +42,12 @@ class PasswordResetTest extends TestCase
         $this->post('/forgot-password', ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-            $response = $this->get('/reset-password/'.$notification->token);
+            $response = $this->get('/reset-password/' . $notification->token);
 
-            $response->assertStatus(200);
+            $response->assertStatus(200)
+                ->assertSee('Сброс пароля')
+                ->assertSee('Email')
+                ->assertSee('Пароль');
 
             return true;
         });
@@ -59,13 +65,28 @@ class PasswordResetTest extends TestCase
             $response = $this->post('/reset-password', [
                 'token' => $notification->token,
                 'email' => $user->email,
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                'password' => 'new-password',
+                'password_confirmation' => 'new-password',
             ]);
 
             $response->assertSessionHasNoErrors();
+            $response->assertRedirect(route('login'));
 
             return true;
         });
+    }
+
+    public function test_password_reset_fails_with_invalid_token()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/reset-password', [
+            'token' => 'invalid-token',
+            'email' => $user->email,
+            'password' => 'new-password',
+            'password_confirmation' => 'new-password',
+        ]);
+
+        $response->assertSessionHasErrors(['email']);
     }
 }

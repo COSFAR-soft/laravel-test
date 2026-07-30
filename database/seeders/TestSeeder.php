@@ -11,9 +11,6 @@ class TestSeeder extends Seeder
 {
     public function run(): void
     {
-        // ============================================
-        // 📝 ТЕСТ №1: Основы Laravel (10 вопросов)
-        // ============================================
         $test1 = Test::create([
             'title' => 'Основы Laravel',
             'description' => 'Проверьте свои знания основ фреймворка Laravel. Вопросы охватывают маршруты, контроллеры, Blade, Eloquent и миграции.',
@@ -22,7 +19,6 @@ class TestSeeder extends Seeder
             'is_published' => true,
         ]);
 
-        // Вопрос 1: Однозначный
         $q1 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какой метод используется для определения GET-маршрута в Laravel?',
@@ -35,7 +31,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q1->id, 'answer_text' => 'Route::any()', 'is_correct' => false]);
         Answer::create(['question_id' => $q1->id, 'answer_text' => 'Route::delete()', 'is_correct' => false]);
 
-        // Вопрос 2: Однозначный
         $q2 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какая команда создает новый контроллер в Laravel?',
@@ -48,7 +43,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q2->id, 'answer_text' => 'php artisan new:controller', 'is_correct' => false]);
         Answer::create(['question_id' => $q2->id, 'answer_text' => 'php artisan controller:make', 'is_correct' => false]);
 
-        // Вопрос 3: Однозначный
         $q3 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какой файл содержит маршруты веб-приложения?',
@@ -61,7 +55,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q3->id, 'answer_text' => 'routes/console.php', 'is_correct' => false]);
         Answer::create(['question_id' => $q3->id, 'answer_text' => 'routes/channels.php', 'is_correct' => false]);
 
-        // Вопрос 4: Однозначный
         $q4 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какой метод Eloquent используется для получения всех записей?',
@@ -74,7 +67,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q4->id, 'answer_text' => 'Model::find()', 'is_correct' => false]);
         Answer::create(['question_id' => $q4->id, 'answer_text' => 'Model::fetch()', 'is_correct' => false]);
 
-        // Вопрос 5: Однозначный
         $q5 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какой синтаксис Blade для вывода переменной?',
@@ -87,7 +79,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q5->id, 'answer_text' => '{!! $variable !!}', 'is_correct' => false]);
         Answer::create(['question_id' => $q5->id, 'answer_text' => '${ $variable }', 'is_correct' => false]);
 
-        // Вопрос 6: Однозначный
         $q6 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какая команда создает миграцию?',
@@ -100,7 +91,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q6->id, 'answer_text' => 'php artisan create:migration', 'is_correct' => false]);
         Answer::create(['question_id' => $q6->id, 'answer_text' => 'php artisan new:migration', 'is_correct' => false]);
 
-        // Вопрос 7: Однозначный
         $q7 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какой метод используется для валидации данных в контроллере?',
@@ -113,7 +103,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q7->id, 'answer_text' => '$request->verify()', 'is_correct' => false]);
         Answer::create(['question_id' => $q7->id, 'answer_text' => '$request->test()', 'is_correct' => false]);
 
-        // Вопрос 8: Однозначный
         $q8 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какой файл используется для настройки подключения к базе данных?',
@@ -126,7 +115,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q8->id, 'answer_text' => 'config/app.php', 'is_correct' => false]);
         Answer::create(['question_id' => $q8->id, 'answer_text' => 'bootstrap/app.php', 'is_correct' => false]);
 
-        // Вопрос 9: Однозначный
         $q9 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Что такое Service Provider в Laravel?',
@@ -139,7 +127,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q9->id, 'answer_text' => 'Middleware для обработки запросов', 'is_correct' => false]);
         Answer::create(['question_id' => $q9->id, 'answer_text' => 'Роутер для API', 'is_correct' => false]);
 
-        // Вопрос 10: Однозначный (сложнее)
         $q10 = Question::create([
             'test_id' => $test1->id,
             'question_text' => 'Какая команда применяет все миграции?',
@@ -153,9 +140,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q10->id, 'answer_text' => 'php artisan up', 'is_correct' => false]);
 
 
-        // ============================================
-        // 📝 ТЕСТ №2: Eloquent ORM (8 вопросов)
-        // ============================================
         $test2 = Test::create([
             'title' => 'Eloquent ORM',
             'description' => 'Тест по работе с Eloquent ORM — основной ORM для работы с базой данных в Laravel.',
@@ -261,9 +245,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q18->id, 'answer_text' => 'Model::one()', 'is_correct' => false]);
 
 
-        // ============================================
-        // 📝 ТЕСТ №3: Blade и Frontend (7 вопросов)
-        // ============================================
         $test3 = Test::create([
             'title' => 'Blade и Frontend в Laravel',
             'description' => 'Тест по Blade-шаблонизатору и работе с фронтендом в Laravel.',
@@ -357,9 +338,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q25->id, 'answer_text' => '{{ path(\'path\') }}', 'is_correct' => false]);
 
 
-        // ============================================
-        // 📝 ТЕСТ №4: API в Laravel (5 вопросов)
-        // ============================================
         $test4 = Test::create([
             'title' => 'API в Laravel',
             'description' => 'Тест по созданию REST API, аутентификации через Sanctum и работе с JSON.',
@@ -429,9 +407,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q30->id, 'answer_text' => 'Response::json()', 'is_correct' => false]);
 
 
-        // ============================================
-        // 📝 ТЕСТ №5: Миграции и БД (5 вопросов)
-        // ============================================
         $test5 = Test::create([
             'title' => 'Миграции и Базы данных',
             'description' => 'Тест по работе с миграциями, схемами БД и командами Artisan.',
@@ -501,9 +476,6 @@ class TestSeeder extends Seeder
         Answer::create(['question_id' => $q35->id, 'answer_text' => 'php artisan show:migrations', 'is_correct' => false]);
 
 
-        // ============================================
-        // 📝 ТЕСТ №6: Продвинутый Laravel (5 вопросов)
-        // ============================================
         $test6 = Test::create([
             'title' => 'Продвинутый Laravel',
             'description' => 'Сложные вопросы по Laravel: события, очереди, кеширование и тестирование.',

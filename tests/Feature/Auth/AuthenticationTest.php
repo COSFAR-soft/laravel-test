@@ -15,7 +15,10 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get('/login');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertSee('Вход')
+            ->assertSee('Email')
+            ->assertSee('Пароль');
     }
 
     public function test_users_can_authenticate_using_the_login_screen()
@@ -40,6 +43,16 @@ class AuthenticationTest extends TestCase
             'password' => 'wrong-password',
         ]);
 
+        $this->assertGuest();
+    }
+
+    public function test_users_can_logout()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post('/logout');
+
+        $response->assertRedirect('/');
         $this->assertGuest();
     }
 }

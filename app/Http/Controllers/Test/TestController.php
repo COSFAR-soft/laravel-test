@@ -85,14 +85,19 @@ class TestController extends Controller
         $questions = $test->questions()
             ->with('answers')
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->map(function ($question) {
+                // Перемешиваем ответы для каждого вопроса
+                $answers = $question->answers->shuffle();
+                $question->setRelation('answers', $answers);
+                return $question;
+            });
 
         // Проверяем время
         $timeLimit = $test->time_limit;
         $timeSpent = $result->started_at->diffInMinutes(now());
         $timeLeft = max(0, $timeLimit - $timeSpent);
 
-        // Если время вышло - автоматически завершаем
         if ($timeLeft <= 0) {
             return $this->autoSubmit($test, $result);
         }

@@ -14,7 +14,11 @@ class RegistrationTest extends TestCase
     {
         $response = $this->get('/register');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertSee('Регистрация')
+            ->assertSee('Имя')
+            ->assertSee('Email')
+            ->assertSee('Пароль');
     }
 
     public function test_new_users_can_register()
@@ -28,5 +32,36 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+            'name' => 'Test User',
+        ]);
+    }
+
+    public function test_registration_requires_valid_email()
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'invalid-email',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors(['email']);
+        $this->assertGuest();
+    }
+
+    public function test_registration_requires_password_confirmation()
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors(['password']);
+        $this->assertGuest();
     }
 }
