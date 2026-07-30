@@ -17,6 +17,22 @@
                         <i class="bi bi-list-check"></i> Тесты
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('tests.history') }}">
+                        <i class="bi bi-clock-history"></i> История
+                    </a>
+                </li>
+
+                <!-- Ссылка на админку -->
+                @auth
+                    @if(auth()->user()->email === 'admin@example.com')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.tests.index') }}">
+                                <i class="bi bi-gear-fill"></i> Панель администратора
+                            </a>
+                        </li>
+                    @endif
+                @endauth
             </ul>
 
             <!-- Правое меню -->
@@ -44,6 +60,14 @@
                             <a class="dropdown-item" href="{{ route('tests.history') }}">
                                 <i class="bi bi-clock-history"></i> История
                             </a>
+
+                            @if(auth()->user()->email === 'admin@example.com')
+                                <hr class="dropdown-divider">
+                                <a class="dropdown-item" href="{{ route('admin.tests.index') }}">
+                                    <i class="bi bi-gear-fill"></i> Панель администратора
+                                </a>
+                            @endif
+
                             <hr class="dropdown-divider">
                             <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

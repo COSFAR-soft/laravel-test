@@ -38,3 +38,5 @@ Route::middleware(['auth'])->get('/history', [TestController::class, 'history'])
     ->name('tests.history');
 
 require __DIR__.'/auth.php';
+
+require __DIR__.'/admin.php';
