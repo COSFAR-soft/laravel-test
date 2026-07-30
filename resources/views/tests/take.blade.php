@@ -3,12 +3,7 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <span>{{ $test->title }}</span>
             <div class="d-flex align-items-center gap-3 flex-wrap">
-                <!-- ТАЙМЕР -->
-                <div id="timer" class="badge bg-warning fs-6 p-2">
-                    <i class="bi bi-clock"></i>
-                    <span class="ms-1">осталось </span>
-                    <span id="timeDisplay">{{ sprintf('%02d:%02d', floor($timeLeft / 60), $timeLeft % 60) }}</span>
-                </div>
+                <x-tests.timer :timeLeft="$timeLeft" />
                 <span class="badge bg-secondary fs-6 p-2">
                     <i class="bi bi-list-ol"></i>
                     {{ count($questions) }} вопросов
@@ -22,139 +17,30 @@
     </x-slot>
 
     @if(session('warning'))
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ session('warning') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <x-ui.alert type="warning" :message="session('warning')" />
     @endif
 
     <form action="{{ route('tests.submit', $test) }}" method="POST" id="testForm">
         @csrf
 
         <div class="row">
-            {{--ВОПРОСЫ--}}
             <div class="col-lg-8">
                 @foreach($questions as $index => $question)
-                    <div class="card mb-4 question-card" id="question-{{ $index + 1 }}">
-                        <div class="card-header bg-light">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold">Вопрос {{ $index + 1 }}</span>
-                                <span class="badge bg-secondary">
-                                    {{ $question->type === 'single' ? 'Один ответ' : 'Несколько ответов' }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text fs-6">{{ $question->question_text }}</p>
-
-                            @if($question->type === 'single')
-                                <div class="mt-3">
-                                    @foreach($question->answers as $answer)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio"
-                                                   name="answers[{{ $question->id }}]"
-                                                   id="answer_{{ $answer->id }}"
-                                                   value="{{ $answer->id }}"
-                                                   data-question="{{ $index + 1 }}"
-                                                   required>
-                                            <label class="form-check-label" for="answer_{{ $answer->id }}">
-                                                {{ $answer->answer_text }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="mt-3">
-                                    <div class="alert alert-info small">
-                                        <i class="bi bi-info-circle"></i>
-                                        {{ __('Выберите все правильные варианты') }}
-                                    </div>
-                                    @foreach($question->answers as $answer)
-                                        <div class="form-check" for="answer_{{ $answer->id }}">
-                                            <input class="form-check-input" type="checkbox"
-                                                   name="answers[{{ $question->id }}][]"
-                                                   id="answer_{{ $answer->id }}"
-                                                   value="{{ $answer->id }}"
-                                                   data-question="{{ $index + 1 }}">
-                                            <label class="form-check-label" for="answer_{{ $answer->id }}">
-                                                {{ $answer->answer_text }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+                    <x-tests.question-card :question="$question" :index="$index" />
                 @endforeach
 
                 <div class="d-grid mb-4">
-                    <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                    <x-ui.button type="submit" color="success" size="lg" id="submitBtn">
                         <i class="bi bi-check-circle"></i> {{ __('Завершить тест') }}
-                    </button>
+                    </x-ui.button>
                 </div>
             </div>
 
-            {{--ПРОГРЕСС-ПАНЕЛЬ--}}
             <div class="col-lg-4">
-                <div class="card sticky-top" style="top: 80px;">
-                    <div class="card-body">
-                        <h6 class="card-title text-center mb-3">
-                            <i class="bi bi-graph-up-arrow"></i> {{ __('Прогресс') }}
-                        </h6>
-
-                        <!-- Прогресс-бар -->
-                        <div class="progress mb-3" style="height: 30px;">
-                            <div id="progressBar"
-                                 class="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                                 style="width: 0%;">
-                                0%
-                            </div>
-                        </div>
-
-                        <!-- Статистика -->
-                        <div class="row text-center small mb-3">
-                            <div class="col-4">
-                                <div class="border rounded p-2">
-                                    <div class="fw-bold text-success" id="answeredCountFooter">0</div>
-                                    <div class="text-muted">Отвечено</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border rounded p-2">
-                                    <div class="fw-bold text-warning" id="remainingCount">{{ count($questions) }}</div>
-                                    <div class="text-muted">Осталось</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border rounded p-2">
-                                    <div class="fw-bold text-primary">{{ count($questions) }}</div>
-                                    <div class="text-muted">Всего</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <!-- Навигация по вопросам -->
-                        <div id="questionStatus" class="d-flex flex-wrap justify-content-center gap-1">
-                            @foreach($questions as $index => $question)
-                                <button type="button"
-                                        class="btn btn-outline-secondary btn-sm status-btn"
-                                        data-question="{{ $index + 1 }}"
-                                        title="Перейти к вопросу {{ $index + 1 }}">
-                                    {{ $index + 1 }}
-                                </button>
-                            @endforeach
-                        </div>
-
-                        <hr>
-
-                        <div class="text-center small text-muted">
-                            <i class="bi bi-info-circle"></i>
-                            Нажмите на номер вопроса для быстрой навигации
-                        </div>
-                    </div>
-                </div>
+                <x-tests.progress-panel
+                    :questions="$questions"
+                    :totalQuestions="count($questions)"
+                />
             </div>
         </div>
     </form>

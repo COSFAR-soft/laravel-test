@@ -28,9 +28,9 @@
 
                     <div class="display-1 mb-4">
                         @if($result->is_passed)
-                            😁 {{--прошел--}}
+                            {{--прошел--}}
                         @else
-                            😋 {{--не прошел--}}
+                            {{--не прошел--}}
                         @endif
                     </div>
 
