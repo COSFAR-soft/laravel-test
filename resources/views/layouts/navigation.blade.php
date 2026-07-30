@@ -13,18 +13,8 @@
             <!-- Левое меню -->
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/dashboard') }}">
-                        <i class="bi bi-speedometer2"></i> Статистика
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="{{ route('tests.index') }}">
                         <i class="bi bi-list-check"></i> Тесты
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('tests.history') }}">
-                        <i class="bi bi-clock-history"></i> История
                     </a>
                 </li>
             </ul>
@@ -48,11 +38,12 @@
                             <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            @if (Route::has('profile.edit'))
-                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                    <i class="bi bi-gear"></i> Профиль
-                                </a>
-                            @endif
+                            <a class="dropdown-item" href="{{ url('/dashboard') }}">
+                                <i class="bi bi-speedometer2"></i> Статистика
+                            </a>
+                            <a class="dropdown-item" href="{{ route('tests.history') }}">
+                                <i class="bi bi-clock-history"></i> История
+                            </a>
                             <hr class="dropdown-divider">
                             <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

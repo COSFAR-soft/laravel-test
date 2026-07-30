@@ -63,7 +63,7 @@
                         <small class="text-muted">
                             <i class="bi bi-check-circle"></i> {{ $result->correct_answers }} / {{ $result->total_questions }}
                             @if($result->time_spent)
-                                <br><i class="bi bi-clock"></i> {{ $result->time_spent }} мин
+                                <br><i class="bi bi-clock"></i> {{ $result->time_spent }} минут
                             @endif
                         </small>
                     </div>

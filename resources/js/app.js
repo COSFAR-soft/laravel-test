@@ -1,5 +1,6 @@
 // Импорт зависимостей
 import 'bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import '@popperjs/core';
 import $ from 'jquery';
 import axios from 'axios';

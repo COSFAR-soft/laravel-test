@@ -22,9 +22,6 @@
                             $averageScore = \App\Models\TestResult::where('user_id', auth()->id())
                                 ->whereNotNull('completed_at')
                                 ->avg('score') ?? 0;
-                            $pendingTests = \App\Models\TestResult::where('user_id', auth()->id())
-                                ->whereNull('completed_at')
-                                ->count();
                         @endphp
 
                         <div class="col-md-4 col-6 mb-3">
