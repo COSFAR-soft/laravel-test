@@ -1,0 +1,832 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="b0kSgTtUcauNzkynaNnCaPHvuyGRyGCEA8tNmDAH">
+
+    <title>Laravel</title>
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+
+    <!-- Scripts -->
+    <script type="module" src="http://localhost:5173/@vite/client"></script><link rel="stylesheet" href="http://localhost:5173/resources/css/app.css" /><script type="module" src="http://localhost:5173/resources/js/app.js"></script></head>
+<body>
+<div id="app">
+    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="http://localhost">
+                Laravel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Переключить навигацию">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Левое меню -->
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost/dashboard">
+                            <i class="bi bi-speedometer2"></i> Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost/tests">
+                            <i class="bi bi-list-check"></i> Тесты
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost/history">
+                            <i class="bi bi-clock-history"></i> История
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Правое меню -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> Владимир
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <hr class="dropdown-divider">
+                            <a class="dropdown-item text-danger" href="http://localhost/logout"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right"></i> Выйти
+                            </a>
+                            <form id="logout-form" action="http://localhost/logout" method="POST" class="d-none">
+                                <input type="hidden" name="_token" value="b0kSgTtUcauNzkynaNnCaPHvuyGRyGCEA8tNmDAH" autocomplete="off">                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Heading -->
+    <header class="bg-white border-bottom shadow-sm">
+        <div class="container py-4">
+            <h1 class="h3 mb-0"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span>Основы Laravel</span>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <!-- ТАЙМЕР -->
+                    <div id="timer" class="badge bg-warning fs-6 p-2">
+                        <i class="bi bi-clock"></i>
+                        <span id="timeDisplay">00:04</span>
+                        <span class="ms-1">осталось</span>
+                    </div>
+                    <span class="badge bg-secondary fs-6 p-2">
+                    <i class="bi bi-list-ol"></i>
+                    10 вопросов
+                </span>
+                    <span class="badge bg-success fs-6 p-2">
+                    <i class="bi bi-check-circle"></i>
+                    <span id="answeredCount">0</span> из 10 отвечено
+                </span>
+                </div>
+            </div></h1>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="py-4">
+        <div class="container">
+
+
+            <form action="http://localhost/tests/1/submit" method="POST" id="testForm">
+                <input type="hidden" name="_token" value="b0kSgTtUcauNzkynaNnCaPHvuyGRyGCEA8tNmDAH" autocomplete="off">
+                <div class="row">
+                    <!-- ВОПРОСЫ -->
+                    <div class="col-lg-8">
+                        <div class="card mb-4 question-card" id="question-1">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 1</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какой метод используется для определения GET-маршрута в Laravel?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[1]"
+                                               id="answer_1"
+                                               value="1"
+                                               data-question="1"
+                                               required>
+                                        <label class="form-check-label" for="answer_1">
+                                            Route::get()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[1]"
+                                               id="answer_2"
+                                               value="2"
+                                               data-question="1"
+                                               required>
+                                        <label class="form-check-label" for="answer_2">
+                                            Route::post()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[1]"
+                                               id="answer_3"
+                                               value="3"
+                                               data-question="1"
+                                               required>
+                                        <label class="form-check-label" for="answer_3">
+                                            Route::any()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[1]"
+                                               id="answer_4"
+                                               value="4"
+                                               data-question="1"
+                                               required>
+                                        <label class="form-check-label" for="answer_4">
+                                            Route::delete()
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-2">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 2</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какая команда создает новый контроллер в Laravel?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[2]"
+                                               id="answer_5"
+                                               value="5"
+                                               data-question="2"
+                                               required>
+                                        <label class="form-check-label" for="answer_5">
+                                            php artisan make:controller
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[2]"
+                                               id="answer_6"
+                                               value="6"
+                                               data-question="2"
+                                               required>
+                                        <label class="form-check-label" for="answer_6">
+                                            php artisan create:controller
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[2]"
+                                               id="answer_7"
+                                               value="7"
+                                               data-question="2"
+                                               required>
+                                        <label class="form-check-label" for="answer_7">
+                                            php artisan new:controller
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[2]"
+                                               id="answer_8"
+                                               value="8"
+                                               data-question="2"
+                                               required>
+                                        <label class="form-check-label" for="answer_8">
+                                            php artisan controller:make
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-3">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 3</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какой файл содержит маршруты веб-приложения?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[3]"
+                                               id="answer_9"
+                                               value="9"
+                                               data-question="3"
+                                               required>
+                                        <label class="form-check-label" for="answer_9">
+                                            routes/web.php
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[3]"
+                                               id="answer_10"
+                                               value="10"
+                                               data-question="3"
+                                               required>
+                                        <label class="form-check-label" for="answer_10">
+                                            routes/api.php
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[3]"
+                                               id="answer_11"
+                                               value="11"
+                                               data-question="3"
+                                               required>
+                                        <label class="form-check-label" for="answer_11">
+                                            routes/console.php
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[3]"
+                                               id="answer_12"
+                                               value="12"
+                                               data-question="3"
+                                               required>
+                                        <label class="form-check-label" for="answer_12">
+                                            routes/channels.php
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-4">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 4</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какой метод Eloquent используется для получения всех записей?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[4]"
+                                               id="answer_13"
+                                               value="13"
+                                               data-question="4"
+                                               required>
+                                        <label class="form-check-label" for="answer_13">
+                                            Model::all()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[4]"
+                                               id="answer_14"
+                                               value="14"
+                                               data-question="4"
+                                               required>
+                                        <label class="form-check-label" for="answer_14">
+                                            Model::get()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[4]"
+                                               id="answer_15"
+                                               value="15"
+                                               data-question="4"
+                                               required>
+                                        <label class="form-check-label" for="answer_15">
+                                            Model::find()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[4]"
+                                               id="answer_16"
+                                               value="16"
+                                               data-question="4"
+                                               required>
+                                        <label class="form-check-label" for="answer_16">
+                                            Model::fetch()
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-5">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 5</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какой синтаксис Blade для вывода переменной?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[5]"
+                                               id="answer_17"
+                                               value="17"
+                                               data-question="5"
+                                               required>
+                                        <label class="form-check-label" for="answer_17">
+                                            {{ $variable }}
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[5]"
+                                               id="answer_18"
+                                               value="18"
+                                               data-question="5"
+                                               required>
+                                        <label class="form-check-label" for="answer_18">
+                                            &lt;?= $variable ?&gt;
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[5]"
+                                               id="answer_19"
+                                               value="19"
+                                               data-question="5"
+                                               required>
+                                        <label class="form-check-label" for="answer_19">
+                                            {!! $variable !!}
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[5]"
+                                               id="answer_20"
+                                               value="20"
+                                               data-question="5"
+                                               required>
+                                        <label class="form-check-label" for="answer_20">
+                                            ${ $variable }
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-6">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 6</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какая команда создает миграцию?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[6]"
+                                               id="answer_21"
+                                               value="21"
+                                               data-question="6"
+                                               required>
+                                        <label class="form-check-label" for="answer_21">
+                                            php artisan make:migration
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[6]"
+                                               id="answer_22"
+                                               value="22"
+                                               data-question="6"
+                                               required>
+                                        <label class="form-check-label" for="answer_22">
+                                            php artisan migrate:make
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[6]"
+                                               id="answer_23"
+                                               value="23"
+                                               data-question="6"
+                                               required>
+                                        <label class="form-check-label" for="answer_23">
+                                            php artisan create:migration
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[6]"
+                                               id="answer_24"
+                                               value="24"
+                                               data-question="6"
+                                               required>
+                                        <label class="form-check-label" for="answer_24">
+                                            php artisan new:migration
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-7">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 7</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какой метод используется для валидации данных в контроллере?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[7]"
+                                               id="answer_25"
+                                               value="25"
+                                               data-question="7"
+                                               required>
+                                        <label class="form-check-label" for="answer_25">
+                                            $request-&gt;validate()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[7]"
+                                               id="answer_26"
+                                               value="26"
+                                               data-question="7"
+                                               required>
+                                        <label class="form-check-label" for="answer_26">
+                                            $request-&gt;check()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[7]"
+                                               id="answer_27"
+                                               value="27"
+                                               data-question="7"
+                                               required>
+                                        <label class="form-check-label" for="answer_27">
+                                            $request-&gt;verify()
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[7]"
+                                               id="answer_28"
+                                               value="28"
+                                               data-question="7"
+                                               required>
+                                        <label class="form-check-label" for="answer_28">
+                                            $request-&gt;test()
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-8">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 8</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какой файл используется для настройки подключения к базе данных?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[8]"
+                                               id="answer_29"
+                                               value="29"
+                                               data-question="8"
+                                               required>
+                                        <label class="form-check-label" for="answer_29">
+                                            config/database.php
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[8]"
+                                               id="answer_30"
+                                               value="30"
+                                               data-question="8"
+                                               required>
+                                        <label class="form-check-label" for="answer_30">
+                                            .env
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[8]"
+                                               id="answer_31"
+                                               value="31"
+                                               data-question="8"
+                                               required>
+                                        <label class="form-check-label" for="answer_31">
+                                            config/app.php
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[8]"
+                                               id="answer_32"
+                                               value="32"
+                                               data-question="8"
+                                               required>
+                                        <label class="form-check-label" for="answer_32">
+                                            bootstrap/app.php
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-9">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 9</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Что такое Service Provider в Laravel?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[9]"
+                                               id="answer_33"
+                                               value="33"
+                                               data-question="9"
+                                               required>
+                                        <label class="form-check-label" for="answer_33">
+                                            Центральное место регистрации сервисов
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[9]"
+                                               id="answer_34"
+                                               value="34"
+                                               data-question="9"
+                                               required>
+                                        <label class="form-check-label" for="answer_34">
+                                            Класс для работы с БД
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[9]"
+                                               id="answer_35"
+                                               value="35"
+                                               data-question="9"
+                                               required>
+                                        <label class="form-check-label" for="answer_35">
+                                            Middleware для обработки запросов
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[9]"
+                                               id="answer_36"
+                                               value="36"
+                                               data-question="9"
+                                               required>
+                                        <label class="form-check-label" for="answer_36">
+                                            Роутер для API
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 question-card" id="question-10">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Вопрос 10</span>
+                                    <span class="badge bg-secondary">
+                                    Один ответ
+                                </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text fs-6">Какая команда применяет все миграции?</p>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[10]"
+                                               id="answer_37"
+                                               value="37"
+                                               data-question="10"
+                                               required>
+                                        <label class="form-check-label" for="answer_37">
+                                            php artisan migrate
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[10]"
+                                               id="answer_38"
+                                               value="38"
+                                               data-question="10"
+                                               required>
+                                        <label class="form-check-label" for="answer_38">
+                                            php artisan db:migrate
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[10]"
+                                               id="answer_39"
+                                               value="39"
+                                               data-question="10"
+                                               required>
+                                        <label class="form-check-label" for="answer_39">
+                                            php artisan schema:migrate
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="answers[10]"
+                                               id="answer_40"
+                                               value="40"
+                                               data-question="10"
+                                               required>
+                                        <label class="form-check-label" for="answer_40">
+                                            php artisan up
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="bi bi-check-circle"></i> Завершить тест
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ПРОГРЕСС-ПАНЕЛЬ -->
+                    <div class="col-lg-4">
+                        <div class="card sticky-top" style="top: 80px;">
+                            <div class="card-body">
+                                <h6 class="card-title text-center mb-3">
+                                    <i class="bi bi-graph-up-arrow"></i> Прогресс
+                                </h6>
+
+                                <!-- Прогресс-бар -->
+                                <div class="progress mb-3" style="height: 30px;">
+                                    <div id="progressBar" class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                         style="width: 0%;">
+                                        0%
+                                    </div>
+                                </div>
+
+                                <!-- Статистика -->
+                                <div class="row text-center small mb-3">
+                                    <div class="col-4">
+                                        <div class="border rounded p-2">
+                                            <div class="fw-bold text-success" id="answeredCountFooter">0</div>
+                                            <div class="text-muted">Отвечено</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="border rounded p-2">
+                                            <div class="fw-bold text-warning" id="remainingCount">10</div>
+                                            <div class="text-muted">Осталось</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="border rounded p-2">
+                                            <div class="fw-bold text-primary">10</div>
+                                            <div class="text-muted">Всего</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <!-- Навигация по вопросам -->
+                                <div id="questionStatus" class="d-flex flex-wrap justify-content-center gap-1">
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="1"
+                                            title="Вопрос 1">
+                                        1
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="2"
+                                            title="Вопрос 2">
+                                        2
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="3"
+                                            title="Вопрос 3">
+                                        3
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="4"
+                                            title="Вопрос 4">
+                                        4
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="5"
+                                            title="Вопрос 5">
+                                        5
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="6"
+                                            title="Вопрос 6">
+                                        6
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="7"
+                                            title="Вопрос 7">
+                                        7
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="8"
+                                            title="Вопрос 8">
+                                        8
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="9"
+                                            title="Вопрос 9">
+                                        9
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm status-btn"
+                                            data-question="10"
+                                            title="Вопрос 10">
+                                        10
+                                    </button>
+                                </div>
+
+                                <hr>
+
+                                <div class="text-center small text-muted">
+                                    <i class="bi bi-info-circle"></i>
+                                    Нажмите на номер вопроса для быстрой навигации
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

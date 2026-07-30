@@ -55,7 +55,12 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
-        "allow-plugins": true
+        "allow-plugins": true,
+        "policy": {
+            "advisories": {
+                "block": false
+            }
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true

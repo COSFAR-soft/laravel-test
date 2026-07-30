@@ -11,26 +11,39 @@ window.$ = window.jQuery = $;
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-// Импорт стилей (уже загружается через Vite)
-// import '../sass/app.scss';
+import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
 
 // Проверка загрузки
 console.log('✅ Vite + jQuery + Bootstrap работает!');
-console.log('jQuery version:', $.fn.jquery);
-console.log('Bootstrap version:', bootstrap?.version || 'unknown');
+console.log('📦 jQuery version:', $.fn.jquery);
+try {
+    // Проверяем через импортированный объект
+    console.log('📦 Bootstrap version:', bootstrap?.version || 'unknown');
 
-// ============================================
-// Ваш код с jQuery
-// ============================================
+    //  через window
+    console.log('📦 Bootstrap (window):', window.bootstrap?.version || 'unknown');
 
-// Пример: Документ готов
+    // Проверяем, что компоненты доступны
+    console.log('📦 Bootstrap components:', {
+        Modal: typeof bootstrap.Modal !== 'undefined',
+        Tooltip: typeof bootstrap.Tooltip !== 'undefined',
+        Popover: typeof bootstrap.Popover !== 'undefined',
+        Dropdown: typeof bootstrap.Dropdown !== 'undefined'
+    });
+} catch (e) {
+    console.warn('⚠️ Bootstrap не загружен:', e.message);
+}
+
+
+
 $(document).ready(function() {
     console.log('📄 DOM загружен');
 
     // Инициализация Bootstrap компонентов
     initBootstrapComponents();
 
-    // Ваши кастомные скрипты
+    // скрипты
     initCustomScripts();
 });
 
@@ -48,15 +61,14 @@ function initBootstrapComponents() {
         return new bootstrap.Popover(popoverTriggerEl);
     });
 
-    console.log('✅ Bootstrap компоненты инициализированы');
+    console.log('Bootstrap компоненты инициализированы');
 }
 
-// Ваши кастомные скрипты
+// скрипты
 function initCustomScripts() {
     // Пример: Обработка форм
     $('form').on('submit', function(e) {
-        // Ваша логика
-        console.log('📝 Форма отправлена:', $(this).attr('id'));
+        console.log('Форма отправлена:', $(this).attr('id'));
     });
 
     // Пример: AJAX запросы
@@ -68,11 +80,10 @@ function initCustomScripts() {
 
         axios.get(url)
             .then(function(response) {
-                console.log('✅ Данные получены:', response.data);
-                // Обработка ответа
+                console.log('Данные получены:', response.data);
             })
             .catch(function(error) {
-                console.error('❌ Ошибка:', error);
+                console.error('Ошибка:', error);
             })
             .finally(function() {
                 $btn.prop('disabled', false).text('Готово');
@@ -84,7 +95,7 @@ function initCustomScripts() {
         $(this).delay(100 * index).fadeIn(500);
     });
 
-    console.log('✅ Кастомные скрипты загружены');
+    console.log('Кастомные скрипты загружены');
 }
 
 // ============================================
@@ -92,14 +103,13 @@ function initCustomScripts() {
 // ============================================
 if (import.meta.hot) {
     import.meta.hot.accept(() => {
-        console.log('🔄 HMR обновление!');
-        // Переинициализация при обновлении
+        console.log('HMR обновление!');
         initCustomScripts();
     });
 }
 
 // ============================================
-// Полезные утилиты с jQuery
+// Полезные утилиты
 // ============================================
 
 // Пример: Утилита для показа уведомлений
@@ -120,7 +130,6 @@ window.showNotification = function(message, type = 'info') {
 
     $('.notifications-container').prepend(alert);
 
-    // Автоматическое скрытие через 5 секунд
     setTimeout(function() {
         alert.alert('close');
     }, 5000);

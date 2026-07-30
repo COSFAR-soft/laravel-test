@@ -1,49 +1,62 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Вход</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body>
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Вход</div>
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autofocus>
-                            @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-                            @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                            <label class="form-check-label" for="remember">Запомнить меня</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Войти</button>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="btn btn-link">Регистрация</a>
-                        @endif
-                    </form>
-                </div>
-            </div>
-        </div>
+<x-guest-layout>
+    <div class="text-center mb-4">
+        <h2 class="h4">{{ __('Login') }}</h2>
+        <p class="text-muted">{{ __('Sign in to your account') }}</p>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label for="email" class="form-label">{{ __('Email') }}</label>
+            <input id="email" type="email"
+                   class="form-control @error('email') is-invalid @enderror"
+                   name="email" value="{{ old('email') }}"
+                   required autofocus>
+            @error('email')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            <label for="password" class="form-label">{{ __('Password') }}</label>
+            <input id="password" type="password"
+                   class="form-control @error('password') is-invalid @enderror"
+                   name="password" required>
+            @error('password')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Remember Me -->
+        <div class="mb-3 form-check">
+            <input id="remember_me" type="checkbox" class="form-check-input" name="remember">
+            <label for="remember_me" class="form-check-label">{{ __('Remember me') }}</label>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">
+                {{ __('Log in') }}
+            </button>
+        </div>
+
+        @if (Route::has('password.request'))
+            <div class="text-center mt-3">
+                <a href="{{ route('password.request') }}" class="text-decoration-none">
+                    {{ __('Forgot your password?') }}
+                </a>
+            </div>
+        @endif
+
+        @if (Route::has('register'))
+            <div class="text-center mt-2">
+                <span class="text-muted">{{ __("Don't have an account?") }}</span>
+                <a href="{{ route('register') }}" class="text-decoration-none">
+                    {{ __('Register') }}
+                </a>
+            </div>
+        @endif
+    </form>
+</x-guest-layout>
