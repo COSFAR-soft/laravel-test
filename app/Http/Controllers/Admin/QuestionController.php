@@ -9,19 +9,37 @@ use App\Models\Answer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class QuestionController
+ *
+ * Админский контроллер для управления вопросами
+ * AJAX
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class QuestionController extends Controller
 {
+    /**
+     * Получить все вопросы теста с ответами
+     */
     public function index(Test $test)
     {
-        $questions = $test->questions()->with('answers')->orderBy('order')->get();
+        $questions = $test->questions()
+            ->with('answers')
+            ->orderBy('order')
+            ->get();
+
         return response()->json($questions);
     }
 
+    /**
+     * Создать новый вопрос
+     */
     public function store(Request $request, Test $test)
     {
         $validator = Validator::make($request->all(), [
             'question_text' => 'required|string',
-            'type' => 'required|in:single,multiple,free,scale',
+            'type' => 'required|in:single,multiple',
             'points' => 'required|integer|min:1',
             'answers' => 'array|required_if:type,single,multiple',
             'answers.*.text' => 'required|string',
@@ -38,14 +56,9 @@ class QuestionController extends Controller
             'type' => $request->type,
             'points' => $request->points,
             'order' => $test->questions()->max('order') + 1,
-            'min_count' => $request->min_count ?? 0,
-            'max_count' => $request->max_count ?? 0,
-            'is_required' => $request->has('is_required'),
-            'has_other' => $request->has('has_other'),
-            'diapason_start' => $request->diapason_start ?? 0,
-            'diapason_end' => $request->diapason_end ?? 10,
         ]);
 
+        // правильные ответы для вопросов
         if (in_array($request->type, ['single', 'multiple'])) {
             foreach ($request->answers as $answerData) {
                 Answer::create([
@@ -56,14 +69,21 @@ class QuestionController extends Controller
             }
         }
 
-        return response()->json(['success' => true, 'message' => 'Вопрос добавлен!', 'question' => $question->load('answers')]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Вопрос добавлен!',
+            'question' => $question->load('answers')
+        ]);
     }
 
+    /**
+     * Обновить вопрос     *
+     */
     public function update(Request $request, Question $question)
     {
         $validator = Validator::make($request->all(), [
             'question_text' => 'required|string',
-            'type' => 'required|in:single,multiple,free,scale',
+            'type' => 'required|in:single,multiple',
             'points' => 'required|integer|min:1',
             'answers' => 'array|required_if:type,single,multiple',
             'answers.*.text' => 'required|string',
@@ -78,40 +98,61 @@ class QuestionController extends Controller
             'question_text' => $request->question_text,
             'type' => $request->type,
             'points' => $request->points,
-            'min_count' => $request->min_count ?? 0,
-            'max_count' => $request->max_count ?? 0,
-            'is_required' => $request->has('is_required'),
-            'has_other' => $request->has('has_other'),
-            'diapason_start' => $request->diapason_start ?? 0,
-            'diapason_end' => $request->diapason_end ?? 10,
         ]);
 
+        // Обновляем ответы
         if (in_array($request->type, ['single', 'multiple'])) {
             $existingIds = $question->answers->pluck('id')->toArray();
             $newIds = [];
+
             foreach ($request->answers as $answerData) {
                 if (isset($answerData['id']) && in_array($answerData['id'], $existingIds)) {
+                    // Обновляем ответ
                     $answer = Answer::find($answerData['id']);
-                    $answer->update(['answer_text' => $answerData['text'], 'is_correct' => $answerData['is_correct'] ?? false]);
+                    $answer->update([
+                        'answer_text' => $answerData['text'],
+                        'is_correct' => $answerData['is_correct'] ?? false,
+                    ]);
                     $newIds[] = $answerData['id'];
                 } else {
-                    $answer = Answer::create(['question_id' => $question->id, 'answer_text' => $answerData['text'], 'is_correct' => $answerData['is_correct'] ?? false]);
+                    // Создаем ответ
+                    $answer = Answer::create([
+                        'question_id' => $question->id,
+                        'answer_text' => $answerData['text'],
+                        'is_correct' => $answerData['is_correct'] ?? false,
+                    ]);
                     $newIds[] = $answer->id;
                 }
             }
+
+            // Удаляем ответы
             $toDelete = array_diff($existingIds, $newIds);
             Answer::whereIn('id', $toDelete)->delete();
         }
 
-        return response()->json(['success' => true, 'message' => 'Вопрос обновлен!', 'question' => $question->fresh()->load('answers')]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Вопрос обновлен!',
+            'question' => $question->fresh()->load('answers')
+        ]);
     }
 
+    /**
+     * Удалить вопрос (в БД связи cascade)
+     */
     public function destroy(Question $question)
     {
         $question->delete();
-        return response()->json(['success' => true, 'message' => 'Вопрос удален!']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Вопрос удален!'
+        ]);
     }
 
+    /**
+     * Изменить порядок вопросов
+     */
     public function reorder(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -128,9 +169,16 @@ class QuestionController extends Controller
             Question::where('id', $item['id'])->update(['order' => $item['order']]);
         }
 
-        return response()->json(['success' => true, 'message' => 'Порядок вопросов обновлен!']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Порядок вопросов обновлен!'
+        ]);
     }
 
+    /**
+     * Загрузка HTML-части редактора вопроса
+     * подгрузка компонентов
+     */
     public function partial(Request $request)
     {
         $type = $request->input('type', 'single');
@@ -143,13 +191,21 @@ class QuestionController extends Controller
             if ($question) $answers = $question->answers;
         }
 
+        // Определяем какой view рендерить
         $view = match($type) {
             'single' => 'admin.questions.single-choice',
             'multiple' => 'admin.questions.multiple-choice',
             default => 'admin.questions.single-choice',
         };
 
-        $html = view($view, ['question' => $question, 'answers' => $answers])->render();
-        return response()->json(['success' => true, 'html' => $html]);
+        $html = view($view, [
+            'question' => $question,
+            'answers' => $answers
+        ])->render();
+
+        return response()->json([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }

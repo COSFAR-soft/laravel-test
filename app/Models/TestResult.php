@@ -5,6 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class TestResult
+ *
+ * Модель для хранения результатов тестирования.
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $test_id
+ * @property int $score
+ * @property int $total_questions
+ * @property int $correct_answers
+ * @property array $answers
+ * @property \Carbon\Carbon $started_at
+ * @property \Carbon\Carbon|null $completed_at
+ *
+ * @property-read float $percentage
+ * @property-read float $score_percentage
+ * @property-read bool $is_passed
+ * @property-read int|null $time_spent
+ */
 class TestResult extends Model
 {
     use HasFactory;
@@ -27,6 +47,7 @@ class TestResult extends Model
     ];
 
     // Связи
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -37,8 +58,10 @@ class TestResult extends Model
         return $this->belongsTo(Test::class);
     }
 
+    //вычисляемые поля
+
     /**
-     * Процент правильных ответов
+     * Процент правильных ответов (по количеству)
      */
     public function getPercentageAttribute()
     {
@@ -64,7 +87,7 @@ class TestResult extends Model
     }
 
     /**
-     * Пройден ли тест
+     * Статус прохождения теста
      */
     public function getIsPassedAttribute()
     {
@@ -72,7 +95,7 @@ class TestResult extends Model
     }
 
     /**
-     * Затраченное время в минутах
+     * Время прохождения в минутах
      */
     public function getTimeSpentAttribute()
     {
