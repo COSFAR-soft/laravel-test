@@ -27,14 +27,12 @@ class TestController extends Controller
      */
     public function show(Test $test)
     {
-        // Проверяем, проходил ли пользователь этот тест
         $result = TestResult::where('user_id', Auth::id())
             ->where('test_id', $test->id)
             ->whereNotNull('completed_at')
             ->latest()
             ->first();
 
-        // Проверяем, есть ли незавершенный тест
         $inProgress = TestResult::where('user_id', Auth::id())
             ->where('test_id', $test->id)
             ->whereNull('completed_at')
@@ -48,7 +46,6 @@ class TestController extends Controller
      */
     public function start(Test $test)
     {
-        // Проверяем, не начат ли уже тест
         $existing = TestResult::where('user_id', Auth::id())
             ->where('test_id', $test->id)
             ->whereNull('completed_at')
@@ -58,7 +55,6 @@ class TestController extends Controller
             return redirect()->route('tests.take', $test);
         }
 
-        // Создаем новый результат
         $result = TestResult::create([
             'user_id' => Auth::id(),
             'test_id' => $test->id,
@@ -87,13 +83,11 @@ class TestController extends Controller
             ->orderBy('order')
             ->get()
             ->map(function ($question) {
-                // Перемешиваем ответы для каждого вопроса
                 $answers = $question->answers->shuffle();
                 $question->setRelation('answers', $answers);
                 return $question;
             });
 
-        // Проверяем время
         $timeLimit = $test->time_limit;
         $timeSpent = $result->started_at->diffInMinutes(now());
         $timeLeft = max(0, $timeLimit - $timeSpent);
@@ -110,12 +104,10 @@ class TestController extends Controller
      */
     private function autoSubmit(Test $test, TestResult $result)
     {
-        // Получаем все вопросы
         $questions = $test->questions()->with('answers')->get();
-        $correctCount = 0;
-
-        // Проверяем сохраненные ответы
         $userAnswers = $result->answers ?? [];
+        $correctCount = 0;
+        $earnedPoints = 0;
 
         foreach ($questions as $question) {
             $userAnswer = $userAnswers[$question->id] ?? null;
@@ -124,29 +116,44 @@ class TestController extends Controller
                 $correct = $question->answers->where('is_correct', true)->first();
                 if ($correct && $userAnswer == $correct->id) {
                     $correctCount++;
+                    $earnedPoints += $question->points;
                 }
             } else {
-                $correctIds = $question->answers
+                $correctTexts = $question->answers
                     ->where('is_correct', true)
-                    ->pluck('id')
+                    ->pluck('answer_text')
                     ->sort()
                     ->values()
                     ->toArray();
 
-                $userIds = is_array($userAnswer) ? $userAnswer : [];
-                sort($userIds);
+                if (is_null($userAnswer) || $userAnswer === '' || (is_array($userAnswer) && empty($userAnswer))) {
+                    continue;
+                }
 
-                if ($correctIds === $userIds) {
+                if (!is_array($userAnswer)) {
+                    $userAnswer = [$userAnswer];
+                }
+
+                $userTexts = $question->answers
+                    ->whereIn('id', $userAnswer)
+                    ->pluck('answer_text')
+                    ->sort()
+                    ->values()
+                    ->toArray();
+
+                if ($correctTexts === $userTexts) {
                     $correctCount++;
+                    $earnedPoints += $question->points;
                 }
             }
         }
 
-        $score = round(($correctCount / $result->total_questions) * 100);
+        $totalPoints = $test->questions->sum('points');
+        $scorePercentage = $totalPoints > 0 ? round(($earnedPoints / $totalPoints) * 100) : 0;
 
         $result->update([
             'correct_answers' => $correctCount,
-            'score' => $score,
+            'score' => $earnedPoints,
             'completed_at' => now(),
         ]);
 
@@ -166,49 +173,51 @@ class TestController extends Controller
 
         $userAnswers = $request->input('answers', []);
         $correctCount = 0;
+        $earnedPoints = 0;
 
         foreach ($test->questions as $question) {
             $userAnswer = $userAnswers[$question->id] ?? null;
 
             if ($question->type === 'single') {
-                // Одиночный выбор
                 $correct = $question->answers->where('is_correct', true)->first();
                 if ($correct && $userAnswer == $correct->id) {
                     $correctCount++;
+                    $earnedPoints += $question->points;
                 }
             } else {
-                // Множественный выбор
-                $correctIds = $question->answers
+                // Множественный выбор — сравниваем по тексту
+                $correctTexts = $question->answers
                     ->where('is_correct', true)
-                    ->pluck('id')
+                    ->pluck('answer_text')
                     ->sort()
                     ->values()
                     ->toArray();
 
-                // Если пользователь не выбрал ничего
                 if (is_null($userAnswer) || $userAnswer === '' || (is_array($userAnswer) && empty($userAnswer))) {
                     continue;
                 }
 
-                // Приводим к массиву
                 if (!is_array($userAnswer)) {
                     $userAnswer = [$userAnswer];
                 }
 
-                $userIds = array_map('intval', $userAnswer);
-                sort($userIds);
+                $userTexts = $question->answers
+                    ->whereIn('id', $userAnswer)
+                    ->pluck('answer_text')
+                    ->sort()
+                    ->values()
+                    ->toArray();
 
-                if ($correctIds === $userIds) {
+                if ($correctTexts === $userTexts) {
                     $correctCount++;
+                    $earnedPoints += $question->points;
                 }
             }
         }
 
-        $score = round(($correctCount / max($result->total_questions, 1)) * 100);
-
         $result->update([
             'correct_answers' => $correctCount,
-            'score' => $score,
+            'score' => $earnedPoints,
             'answers' => $userAnswers,
             'completed_at' => now(),
         ]);

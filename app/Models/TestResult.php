@@ -37,7 +37,9 @@ class TestResult extends Model
         return $this->belongsTo(Test::class);
     }
 
-    // Аксессоры
+    /**
+     * Процент правильных ответов
+     */
     public function getPercentageAttribute()
     {
         if ($this->total_questions == 0) {
@@ -46,11 +48,32 @@ class TestResult extends Model
         return round(($this->correct_answers / $this->total_questions) * 100);
     }
 
-    public function getIsPassedAttribute()
+    /**
+     * Процент набранных баллов
+     */
+    public function getScorePercentageAttribute()
     {
-        return $this->percentage >= $this->test->passing_score;
+        if (!$this->test) {
+            return 0;
+        }
+        $totalPoints = $this->test->questions->sum('points');
+        if ($totalPoints == 0) {
+            return 0;
+        }
+        return round(($this->score / $totalPoints) * 100);
     }
 
+    /**
+     * Пройден ли тест
+     */
+    public function getIsPassedAttribute()
+    {
+        return $this->score_percentage >= $this->test->passing_score;
+    }
+
+    /**
+     * Затраченное время в минутах
+     */
     public function getTimeSpentAttribute()
     {
         if (!$this->completed_at) {
