@@ -51,7 +51,7 @@
 
 ```bash
 # 1. Клонировать репозиторий
-git clone git@github.com:your-username/laravel-test.git
+git clone git@github.com:COSFAR-soft/laravel-test.git
 cd laravel-test
 
 # 2. Скопировать .env
