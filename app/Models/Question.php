@@ -28,7 +28,7 @@ class Question extends Model
         return $this->hasMany(Answer::class);
     }
 
-    // Аксессоры
+    //Вычисляемые поля
     public function getCorrectAnswersAttribute()
     {
         return $this->answers->where('is_correct', true);

@@ -32,7 +32,7 @@ class Test extends Model
         return $this->hasMany(TestResult::class);
     }
 
-    // Аксессоры (вычисляемые поля)
+    // Вычисляемые поля
     public function getQuestionsCountAttribute()
     {
         return $this->questions->count();
@@ -43,7 +43,7 @@ class Test extends Model
         return $this->questions->sum('points');
     }
 
-    // Scope (для фильтрации)
+    // Фильтрация
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
