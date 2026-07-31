@@ -110,12 +110,12 @@ REDIS_PORT=6379
 По умолчанию создается администратор:
 
 Email: admin@example.com
-Password: password
+Пароль: password
 
 ## Тестовый пользователь
 
-Email	test@example.com
-Пароль	password
+Email:	test@example.com
+Пароль:	password
 
 ## Функциональность
 
