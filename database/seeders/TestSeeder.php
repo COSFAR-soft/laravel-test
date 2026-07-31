@@ -408,72 +408,82 @@ class TestSeeder extends Seeder
 
 
         $test5 = Test::create([
-            'title' => 'Миграции и Базы данных',
-            'description' => 'Тест по работе с миграциями, схемами БД и командами Artisan.',
-            'time_limit' => 8,
+            'title' => 'Множественный выбор по Laravel',
+            'description' => 'Тест с вопросами на множественный выбор. Выберите все правильные варианты ответов.',
+            'time_limit' => 10,
             'passing_score' => 70,
             'is_published' => true,
         ]);
 
+        // Вопрос 1: 3 правильных ответа
         $q31 = Question::create([
             'test_id' => $test5->id,
-            'question_text' => 'Какая команда откатывает последнюю миграцию?',
-            'type' => 'single',
-            'points' => 1,
+            'question_text' => 'Какие методы используются для получения данных в Eloquent? (Выберите все верные)',
+            'type' => 'multiple',
+            'points' => 3,
             'order' => 1,
         ]);
-        Answer::create(['question_id' => $q31->id, 'answer_text' => 'php artisan migrate:rollback', 'is_correct' => true]);
-        Answer::create(['question_id' => $q31->id, 'answer_text' => 'php artisan migrate:down', 'is_correct' => false]);
-        Answer::create(['question_id' => $q31->id, 'answer_text' => 'php artisan migrate:reset', 'is_correct' => false]);
-        Answer::create(['question_id' => $q31->id, 'answer_text' => 'php artisan db:rollback', 'is_correct' => false]);
+        Answer::create(['question_id' => $q31->id, 'answer_text' => 'Model::all()', 'is_correct' => true]);
+        Answer::create(['question_id' => $q31->id, 'answer_text' => 'Model::get()', 'is_correct' => true]);
+        Answer::create(['question_id' => $q31->id, 'answer_text' => 'Model::find()', 'is_correct' => true]);
+        Answer::create(['question_id' => $q31->id, 'answer_text' => 'Model::fetch()', 'is_correct' => false]);
+        Answer::create(['question_id' => $q31->id, 'answer_text' => 'Model::select()', 'is_correct' => true]);
 
+        // Вопрос 2: 3 правильных ответа
         $q32 = Question::create([
             'test_id' => $test5->id,
-            'question_text' => 'Что делает команда `php artisan migrate:fresh`?',
-            'type' => 'single',
-            'points' => 1,
+            'question_text' => 'Какие типы связей существуют в Eloquent? (Выберите все верные)',
+            'type' => 'multiple',
+            'points' => 3,
             'order' => 2,
         ]);
-        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Удаляет все таблицы и запускает миграции заново', 'is_correct' => true]);
-        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Обновляет только новые миграции', 'is_correct' => false]);
-        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Показывает список миграций', 'is_correct' => false]);
-        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Создает новую миграцию', 'is_correct' => false]);
+        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Один к одному (hasOne / belongsTo)', 'is_correct' => true]);
+        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Один ко многим (hasMany / belongsTo)', 'is_correct' => true]);
+        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Многие ко многим (belongsToMany)', 'is_correct' => true]);
+        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Один к одному (hasMany / belongsTo)', 'is_correct' => false]);
+        Answer::create(['question_id' => $q32->id, 'answer_text' => 'Многие к одному (hasOne / belongsToMany)', 'is_correct' => false]);
 
+        // Вопрос 3: 2 правильных ответа
         $q33 = Question::create([
             'test_id' => $test5->id,
-            'question_text' => 'В какой папке хранятся миграции?',
-            'type' => 'single',
-            'points' => 1,
+            'question_text' => 'Какие middleware есть в Laravel по умолчанию? (Выберите все верные)',
+            'type' => 'multiple',
+            'points' => 2,
             'order' => 3,
         ]);
-        Answer::create(['question_id' => $q33->id, 'answer_text' => 'database/migrations', 'is_correct' => true]);
-        Answer::create(['question_id' => $q33->id, 'answer_text' => 'app/migrations', 'is_correct' => false]);
-        Answer::create(['question_id' => $q33->id, 'answer_text' => 'storage/migrations', 'is_correct' => false]);
-        Answer::create(['question_id' => $q33->id, 'answer_text' => 'resources/migrations', 'is_correct' => false]);
+        Answer::create(['question_id' => $q33->id, 'answer_text' => 'auth', 'is_correct' => true]);
+        Answer::create(['question_id' => $q33->id, 'answer_text' => 'guest', 'is_correct' => true]);
+        Answer::create(['question_id' => $q33->id, 'answer_text' => 'admin', 'is_correct' => false]);
+        Answer::create(['question_id' => $q33->id, 'answer_text' => 'verified', 'is_correct' => true]);
+        Answer::create(['question_id' => $q33->id, 'answer_text' => 'superuser', 'is_correct' => false]);
 
+        // Вопрос 4: 2 правильных ответа
         $q34 = Question::create([
             'test_id' => $test5->id,
-            'question_text' => 'Какой метод Schema используется для создания новой таблицы?',
-            'type' => 'single',
-            'points' => 1,
+            'question_text' => 'Какие команды Artisan используются для работы с миграциями? (Выберите все верные)',
+            'type' => 'multiple',
+            'points' => 2,
             'order' => 4,
         ]);
-        Answer::create(['question_id' => $q34->id, 'answer_text' => 'Schema::create()', 'is_correct' => true]);
-        Answer::create(['question_id' => $q34->id, 'answer_text' => 'Schema::make()', 'is_correct' => false]);
-        Answer::create(['question_id' => $q34->id, 'answer_text' => 'Schema::new()', 'is_correct' => false]);
-        Answer::create(['question_id' => $q34->id, 'answer_text' => 'Schema::table()', 'is_correct' => false]);
+        Answer::create(['question_id' => $q34->id, 'answer_text' => 'php artisan migrate', 'is_correct' => true]);
+        Answer::create(['question_id' => $q34->id, 'answer_text' => 'php artisan migrate:rollback', 'is_correct' => true]);
+        Answer::create(['question_id' => $q34->id, 'answer_text' => 'php artisan make:migration', 'is_correct' => true]);
+        Answer::create(['question_id' => $q34->id, 'answer_text' => 'php artisan db:seed', 'is_correct' => false]);
+        Answer::create(['question_id' => $q34->id, 'answer_text' => 'php artisan cache:clear', 'is_correct' => false]);
 
+        // Вопрос 5: 2 правильных ответа
         $q35 = Question::create([
             'test_id' => $test5->id,
-            'question_text' => 'Какая команда показывает статус миграций?',
-            'type' => 'single',
-            'points' => 1,
+            'question_text' => 'Какие методы используются для валидации в Laravel? (Выберите все верные)',
+            'type' => 'multiple',
+            'points' => 2,
             'order' => 5,
         ]);
-        Answer::create(['question_id' => $q35->id, 'answer_text' => 'php artisan migrate:status', 'is_correct' => true]);
-        Answer::create(['question_id' => $q35->id, 'answer_text' => 'php artisan status:migrate', 'is_correct' => false]);
-        Answer::create(['question_id' => $q35->id, 'answer_text' => 'php artisan db:status', 'is_correct' => false]);
-        Answer::create(['question_id' => $q35->id, 'answer_text' => 'php artisan show:migrations', 'is_correct' => false]);
+        Answer::create(['question_id' => $q35->id, 'answer_text' => '$request->validate()', 'is_correct' => true]);
+        Answer::create(['question_id' => $q35->id, 'answer_text' => 'Validator::make()', 'is_correct' => true]);
+        Answer::create(['question_id' => $q35->id, 'answer_text' => 'Validation::run()', 'is_correct' => false]);
+        Answer::create(['question_id' => $q35->id, 'answer_text' => 'request()->validate()', 'is_correct' => true]);
+        Answer::create(['question_id' => $q35->id, 'answer_text' => 'Validator::validate()', 'is_correct' => false]);
 
 
         $test6 = Test::create([

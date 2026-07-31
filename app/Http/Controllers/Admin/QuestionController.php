@@ -146,8 +146,6 @@ class QuestionController extends Controller
         $view = match($type) {
             'single' => 'admin.questions.single-choice',
             'multiple' => 'admin.questions.multiple-choice',
-            'free' => 'admin.questions.free-answer',
-            'scale' => 'admin.questions.scale',
             default => 'admin.questions.single-choice',
         };
 

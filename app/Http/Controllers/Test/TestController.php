@@ -167,7 +167,6 @@ class TestController extends Controller
         $userAnswers = $request->input('answers', []);
         $correctCount = 0;
 
-        // Проверяем ответы на каждый вопрос
         foreach ($test->questions as $question) {
             $userAnswer = $userAnswers[$question->id] ?? null;
 
@@ -186,7 +185,17 @@ class TestController extends Controller
                     ->values()
                     ->toArray();
 
-                $userIds = is_array($userAnswer) ? $userAnswer : [];
+                // Если пользователь не выбрал ничего
+                if (is_null($userAnswer) || $userAnswer === '' || (is_array($userAnswer) && empty($userAnswer))) {
+                    continue;
+                }
+
+                // Приводим к массиву
+                if (!is_array($userAnswer)) {
+                    $userAnswer = [$userAnswer];
+                }
+
+                $userIds = array_map('intval', $userAnswer);
                 sort($userIds);
 
                 if ($correctIds === $userIds) {
@@ -195,7 +204,7 @@ class TestController extends Controller
             }
         }
 
-        $score = round(($correctCount / $result->total_questions) * 100);
+        $score = round(($correctCount / max($result->total_questions, 1)) * 100);
 
         $result->update([
             'correct_answers' => $correctCount,
