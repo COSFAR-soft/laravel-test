@@ -2,9 +2,16 @@
 
 use App\Http\Controllers\Admin\TestController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Статистика
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard/test/{test}', [DashboardController::class, 'testStats'])->name('dashboard.test-stats');
+    Route::get('/dashboard/user/{user}', [DashboardController::class, 'userStats'])->name('dashboard.user-stats');
+    Route::get('/result/{result}', [DashboardController::class, 'viewResult'])->name('result.view');
 
     // ТЕСТЫ
     Route::get('/tests', [TestController::class, 'index'])->name('tests.index');

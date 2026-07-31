@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{{-- resources/views/admin/layouts/admin.blade.php --}}
+    <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -24,8 +25,9 @@
             <a href="{{ route('admin.tests.create') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                 <i class="bi bi-plus-circle"></i> Создать тест
             </a>
-            <a href="{{-- route('dashboard') --}}" class="list-group-item list-group-item-action bg-transparent text-white">
-                <i class="bi bi-speedometer2"></i> Статистика
+            <hr class="text-secondary">
+            <a href="{{ route('admin.dashboard.index') }}" class="list-group-item list-group-item-action bg-transparent text-white">
+                <i class="bi bi-graph-up"></i> Статистика
             </a>
             <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action bg-transparent text-danger">
                 <i class="bi bi-x-circle"></i> Закрыть панель
