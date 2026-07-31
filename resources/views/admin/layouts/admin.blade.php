@@ -15,7 +15,7 @@
 <div class="d-flex" id="wrapper">
     <div class="bg-dark text-white" id="sidebar-wrapper" style="min-width:250px;min-height:100vh;">
         <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom">
-            <i class="bi bi-gear"></i> Админ
+            <i class="bi bi-gear"></i> Админка
         </div>
         <div class="list-group list-group-flush my-3">
             <a href="{{ route('admin.tests.index') }}" class="list-group-item list-group-item-action bg-transparent text-white">
@@ -26,6 +26,9 @@
             </a>
             <a href="{{-- route('dashboard') --}}" class="list-group-item list-group-item-action bg-transparent text-white">
                 <i class="bi bi-speedometer2"></i> Статистика
+            </a>
+            <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action bg-transparent text-danger">
+                <i class="bi bi-x-circle"></i> Закрыть панель
             </a>
         </div>
     </div>
