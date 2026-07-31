@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-results.result-header :result="$result" :test="$test" />
+        <x-tests.results.result-header :result="$result" :test="$test" />
     </x-slot>
 
     <div class="row justify-content-center">
