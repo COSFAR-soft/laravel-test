@@ -97,8 +97,7 @@ class TestController extends Controller
             ->first();
 
         if (!$result) {
-            return redirect()->route('tests.start', $test)
-                ->with('error', 'Тест не найден. Начните заново.');
+            abort(404);
         }
 
         // Получаем вопросы с ответами, перемешиваем ответы TODO - метка в тесте
@@ -242,10 +241,14 @@ class TestController extends Controller
             }
         }
 
+        $totalPoints = $test->questions->sum('points');
+        $score = $totalPoints > 0 ? round(($earnedPoints / $totalPoints) * 100) : 0;
+
+
         // Сохраняем результаты
         $result->update([
             'correct_answers' => $correctCount,
-            'score' => $earnedPoints,
+            'score' => $score,
             'answers' => $userAnswers,
             'completed_at' => now(),
         ]);
