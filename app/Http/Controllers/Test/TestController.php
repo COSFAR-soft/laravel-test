@@ -94,7 +94,12 @@ class TestController extends Controller
         $result = TestResult::where('user_id', Auth::id())
             ->where('test_id', $test->id)
             ->whereNull('completed_at')
-            ->firstOrFail();
+            ->first();
+
+        if (!$result) {
+            return redirect()->route('tests.start', $test)
+                ->with('error', 'Тест не найден. Начните заново.');
+        }
 
         // Получаем вопросы с ответами, перемешиваем ответы TODO - метка в тесте
         $questions = $test->questions()

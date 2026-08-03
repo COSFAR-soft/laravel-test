@@ -1,14 +1,13 @@
-// Импорт зависимостей
 import 'bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '@popperjs/core';
 import $ from 'jquery';
 import axios from 'axios';
 
-// Глобальные настройки jQuery
+//jQuery
 window.$ = window.jQuery = $;
 
-// Настройки axios
+// axios
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
