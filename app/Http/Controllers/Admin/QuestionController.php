@@ -38,13 +38,20 @@ class QuestionController extends Controller
     public function store(Request $request, Test $test)
     {
         $validator = Validator::make($request->all(), [
-            'question_text' => 'required|string',
-            'type' => 'required|in:single,multiple',
-            'points' => 'required|integer|min:1',
+            'question_text' => 'required|string|max:1000',
+            'type' => 'required|in:single,multiple,free,scale',
+            'points' => 'required|integer|min:1|max:100',
             'answers' => 'array|required_if:type,single,multiple',
-            'answers.*.text' => 'required|string',
+            'answers.*.text' => 'required|string|max:500',
             'answers.*.is_correct' => 'boolean',
         ]);
+
+        if (in_array($request->type, ['single', 'multiple'])) {
+            $hasCorrect = collect($request->answers)->contains('is_correct', true);
+            if (!$hasCorrect) {
+                return response()->json(['success' => false, 'message' => 'Должен быть хотя бы один правильный ответ'], 422);
+            }
+        }
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
