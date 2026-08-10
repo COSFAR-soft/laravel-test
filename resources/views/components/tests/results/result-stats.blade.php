@@ -10,7 +10,7 @@
     </div>
     <div class="text-muted mb-3">
         <i class="bi bi-star-fill text-warning"></i>
-        {{ $result->score }} / {{ $test->questions->sum('points') }} баллов
+        {{ $result->score }}% / {{ $test->questions->sum('points') }} баллов
     </div>
 
     {{-- Статус --}}

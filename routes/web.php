@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Test\TestController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\QuestionController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 
@@ -22,7 +23,7 @@ RateLimiter::for('admin-questions', function ($job) {
 });
 
 Route::prefix('admin')->middleware(['auth', 'admin', 'throttle:admin-questions'])->group(function () {
-    Route::resource('questions', Admin\QuestionController::class);
+    Route::resource('questions', QuestionController::class);
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])

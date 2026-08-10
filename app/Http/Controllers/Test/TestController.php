@@ -204,7 +204,6 @@ class TestController extends Controller
             $userAnswer = $userAnswers[$question->id] ?? null;
 
             if ($question->type === 'single') {
-                // Для одиночного выбора проверяем по ID
                 $correct = $question->answers->where('is_correct', true)->first();
                 if ($correct && $userAnswer == $correct->id) {
                     $correctCount++;
@@ -214,7 +213,7 @@ class TestController extends Controller
                 // Для множественного выбора проверяем по тексту (ломается на ID из-за перемешивания)
                 $correctTexts = $question->answers
                     ->where('is_correct', true)
-                    ->pluck('answer_text')
+                    ->pluck('id')
                     ->sort()
                     ->values()
                     ->toArray();
@@ -227,25 +226,17 @@ class TestController extends Controller
                     $userAnswer = [$userAnswer];
                 }
 
-                $userTexts = $question->answers
-                    ->whereIn('id', $userAnswer)
-                    ->pluck('answer_text')
-                    ->sort()
-                    ->values()
-                    ->toArray();
+                $userIds = collect($userAnswer)->map('intval')->sort()->values()->toArray();
 
-                if ($correctTexts === $userTexts) {
+                if ($correctIds === $userIds) {
                     $correctCount++;
                     $earnedPoints += $question->points;
                 }
             }
         }
 
-        $totalPoints = $test->questions->sum('points');
-        $score = $totalPoints > 0 ? round(($earnedPoints / $totalPoints) * 100) : 0;
+        $score = $result->total_questions > 0 ? round(($correctCount / $result->total_questions) * 100) : 0;
 
-
-        // Сохраняем результаты
         $result->update([
             'correct_answers' => $correctCount,
             'score' => $score,
