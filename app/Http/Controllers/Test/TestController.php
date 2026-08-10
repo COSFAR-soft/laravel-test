@@ -145,10 +145,9 @@ class TestController extends Controller
                     $earnedPoints += $question->points;
                 }
             } else {
-                // Для множественного выбора сравниваем по тексту (может сломаться по ID)
-                $correctTexts = $question->answers
+                $correctIds = $question->answers
                     ->where('is_correct', true)
-                    ->pluck('answer_text')
+                    ->pluck('id')
                     ->sort()
                     ->values()
                     ->toArray();
@@ -161,23 +160,20 @@ class TestController extends Controller
                     $userAnswer = [$userAnswer];
                 }
 
-                $userTexts = $question->answers
-                    ->whereIn('id', $userAnswer)
-                    ->pluck('answer_text')
-                    ->sort()
-                    ->values()
-                    ->toArray();
+                $userIds = collect($userAnswer)->map('intval')->sort()->values()->toArray();
 
-                if ($correctTexts === $userTexts) {
+                if ($correctIds === $userIds) {
                     $correctCount++;
                     $earnedPoints += $question->points;
                 }
             }
         }
 
+        $score = $result->total_questions > 0 ? round(($correctCount / $result->total_questions) * 100) : 0;
+
         $result->update([
             'correct_answers' => $correctCount,
-            'score' => $earnedPoints,
+            'score' => $score,
             'completed_at' => now(),
         ]);
 
@@ -211,7 +207,7 @@ class TestController extends Controller
                 }
             } else {
                 // Для множественного выбора проверяем по тексту (ломается на ID из-за перемешивания)
-                $correctTexts = $question->answers
+                $correctIds = $question->answers
                     ->where('is_correct', true)
                     ->pluck('id')
                     ->sort()

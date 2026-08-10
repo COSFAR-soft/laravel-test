@@ -670,7 +670,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test7 = Test::create([
             'title' => 'Архитектура и паттерны проектирования',
-            'description' => '🔥 Сложные вопросы по архитектуре Laravel: Service Container, Facades, паттерны проектирования и лучшие практики.',
+            'description' => 'Вопросы по архитектуре Laravel: Service Container, Facades, паттерны проектирования и лучшие практики.',
             'time_limit' => 12,
             'passing_score' => 85,
             'is_published' => true,
@@ -744,7 +744,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test8 = Test::create([
             'title' => 'Оптимизация и производительность',
-            'description' => 'Продвинутые вопросы по оптимизации запросов, кешированию, индексам и работе с большими данными.',
+            'description' => 'Вопросы по оптимизации запросов, кешированию, индексам и работе с большими данными.',
             'time_limit' => 10,
             'passing_score' => 85,
             'is_published' => true,
@@ -819,7 +819,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test9 = Test::create([
             'title' => 'Безопасность и аутентификация',
-            'description' => '🔥 Сложные вопросы по безопасности, аутентификации, авторизации и защите от атак.',
+            'description' => 'Вопросы по безопасности, аутентификации, авторизации и защите от атак.',
             'time_limit' => 10,
             'passing_score' => 90,
             'is_published' => true,
@@ -894,7 +894,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test10 = Test::create([
             'title' => 'Тестирование и TDD',
-            'description' => '🔥 Продвинутые вопросы по тестированию в Laravel, включая Unit-тесты, Feature-тесты и мокирование.',
+            'description' => 'Вопросы по тестированию в Laravel, включая Unit-тесты, Feature-тесты и мокирование.',
             'time_limit' => 10,
             'passing_score' => 85,
             'is_published' => true,
@@ -971,7 +971,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test11 = Test::create([
             'title' => 'Пакеты и экосистема Laravel',
-            'description' => '🔥 Вопросы о популярных пакетах и экосистеме Laravel для решения сложных задач.',
+            'description' => 'Вопросы о популярных пакетах и экосистеме Laravel для решения сложных задач.',
             'time_limit' => 10,
             'passing_score' => 80,
             'is_published' => true,
@@ -1026,7 +1026,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test12 = Test::create([
             'title' => 'Сложные сценарии и edge cases',
-            'description' => '🔥🔥 Самые сложные вопросы по Laravel для опытных разработчиков: транзакции, очереди, исключения и конкурентность.',
+            'description' => 'Вопросы по Laravel для опытных разработчиков: транзакции, очереди, исключения и конкурентность.',
             'time_limit' => 12,
             'passing_score' => 90,
             'is_published' => true,
@@ -1114,7 +1114,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test13 = Test::create([
             'title' => 'WebSockets и real-time приложения',
-            'description' => '🔥 Сложные вопросы по работе с WebSockets, broadcasting и real-time функциональностью.',
+            'description' => 'Вопросы по работе с WebSockets, broadcasting и real-time функциональностью.',
             'time_limit' => 10,
             'passing_score' => 85,
             'is_published' => true,
@@ -1164,7 +1164,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test14 = Test::create([
             'title' => 'Microservices и API Gateway',
-            'description' => '🔥🔥 Продвинутые вопросы по построению микросервисов и API Gateway в экосистеме Laravel.',
+            'description' => 'Вопросы по построению микросервисов и API Gateway в экосистеме Laravel.',
             'time_limit' => 10,
             'passing_score' => 85,
             'is_published' => true,
@@ -1215,7 +1215,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test15 = Test::create([
             'title' => 'Кэширование и управление сессиями',
-            'description' => '🔥 Глубокие вопросы по кэшированию, управлению сессиями и оптимизации хранилищ.',
+            'description' => 'Вопросы по кэшированию, управлению сессиями и оптимизации хранилищ.',
             'time_limit' => 10,
             'passing_score' => 85,
             'is_published' => true,
@@ -1267,7 +1267,7 @@ class TestSeeder extends Seeder
         // ============================================
         $test16 = Test::create([
             'title' => 'Очереди и фоновые задачи (продвинутый)',
-            'description' => '🔥🔥 Самые сложные вопросы по очередям, batch-обработке, и фоновым задачам в Laravel.',
+            'description' => 'Вопросы по очередям, batch-обработке, и фоновым задачам в Laravel.',
             'time_limit' => 12,
             'passing_score' => 90,
             'is_published' => true,

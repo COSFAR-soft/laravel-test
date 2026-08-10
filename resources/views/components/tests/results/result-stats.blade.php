@@ -6,7 +6,7 @@
 <div class="text-center">
     {{-- Процент баллов --}}
     <div class="display-3 fw-bold mb-2">
-        {{ $result->score_percentage }}%
+        {{ $result->score }}%
     </div>
     <div class="text-muted mb-3">
         <i class="bi bi-star-fill text-warning"></i>
@@ -42,7 +42,7 @@
         <div class="col-md-3 col-6">
             <div class="p-3 bg-light rounded">
                 <div class="small text-muted">Заработано баллов</div>
-                <div class="h4 mb-0 text-primary">{{ $result->score }}</div>
+                <div class="h4 mb-0 text-primary">{{ $test->questions->sum('points') }}</div>
             </div>
         </div>
         <div class="col-md-3 col-6">
