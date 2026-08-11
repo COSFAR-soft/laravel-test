@@ -24,18 +24,6 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-md-4 text-end">
-                    <div class="btn-group" role="group">
-                        <a href="{{ route('admin.users.index', ['sort' => 'name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}"
-                           class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-sort-alpha-down"></i> Имя
-                        </a>
-                        <a href="{{ route('admin.users.index', ['sort' => 'created_at', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}"
-                           class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-calendar3"></i> Дата
-                        </a>
-                    </div>
-                </div>
             </form>
         </div>
     </div>

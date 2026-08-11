@@ -26,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Bootstrap для пагинации
         Paginator::useBootstrapFive();
+        Paginator::defaultView('vendor.pagination.custom');
     }
 }
