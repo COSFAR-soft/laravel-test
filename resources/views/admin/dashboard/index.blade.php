@@ -146,7 +146,7 @@
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <a href="{{ route('admin.dashboard.user-stats', $result->user_id) }}" class="text-decoration-none">
+                                        <a href="{{ route('admin.users.show', $result->user_id) }}?back={{ url()->current() }}"  class="text-decoration-none">
                                             <i class="bi bi-person-circle me-2"></i>
                                             {{ $result->user->name ?? 'Неизвестно' }}
                                         </a>
@@ -253,7 +253,7 @@
                 },
                 yAxis: {
                     type: 'value',
-                    name: 'Количество прохождений'
+                    name: 'Количество \nпрохождений'
                 },
                 series: [
                     {
@@ -318,7 +318,7 @@
                 },
                 yAxis: {
                     type: 'value',
-                    name: 'Количество пользователей'
+                    name: 'Количество \nпользователей'
                 },
                 series: [
                     {

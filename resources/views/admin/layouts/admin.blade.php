@@ -27,6 +27,9 @@
                 <i class="bi bi-plus-circle"></i> Создать тест
             </a>
             <hr class="text-secondary">
+            <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action bg-transparent text-white">
+                <i class="bi bi-person"></i> Пользователи
+            </a>
             <a href="{{ route('admin.dashboard.index') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                 <i class="bi bi-graph-up"></i> Статистика
             </a>
