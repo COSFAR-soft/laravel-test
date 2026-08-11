@@ -52,7 +52,7 @@ class TestAPITest extends TestCase
         ]);
     }
 
-    /** @test */
+    /** @test - API возвращает список тестов для авторизованного юзера */
     public function api_can_get_list_of_tests()
     {
         Sanctum::actingAs($this->user);
@@ -77,14 +77,14 @@ class TestAPITest extends TestCase
             ]);
     }
 
-    /** @test */
+    /** @test - API не отдает тесты без авторизации */
     public function api_returns_401_if_not_authenticated()
     {
         $response = $this->getJson('/api/tests');
         $response->assertStatus(401);
     }
 
-    /** @test */
+    /** @test - API возвращает детали теста с вопросами */
     public function api_can_get_test_details()
     {
         Sanctum::actingAs($this->user);
@@ -118,7 +118,7 @@ class TestAPITest extends TestCase
             ]);
     }
 
-    /** @test */
+    /** @test - API стартует тест и создает запись результата */
     public function api_can_start_test()
     {
         Sanctum::actingAs($this->user);
@@ -138,7 +138,7 @@ class TestAPITest extends TestCase
             ]);
     }
 
-    /** @test */
+    /** @test - API не дает стартануть тест дважды */
     public function api_cannot_start_test_twice()
     {
         Sanctum::actingAs($this->user);
@@ -149,7 +149,7 @@ class TestAPITest extends TestCase
         $response->assertStatus(409);
     }
 
-    /** @test */
+    /** @test - API возвращает вопросы для начатого теста */
     public function api_can_get_test_questions()
     {
         Sanctum::actingAs($this->user);
@@ -177,7 +177,7 @@ class TestAPITest extends TestCase
             ]);
     }
 
-    /** @test */
+    /** @test - API принимает ответы и считает результат */
     public function api_can_submit_answers()
     {
         Sanctum::actingAs($this->user);
@@ -207,7 +207,7 @@ class TestAPITest extends TestCase
             ]);
     }
 
-    /** @test */
+    /** @test - API отдает результаты завершенного теста */
     public function api_can_get_test_results()
     {
         Sanctum::actingAs($this->user);
@@ -242,7 +242,7 @@ class TestAPITest extends TestCase
             ]);
     }
 
-    /** @test */
+    /** @test - API не принимает пустые ответы */
     public function api_returns_validation_error_when_submitting_invalid_answers()
     {
         Sanctum::actingAs($this->user);
@@ -256,7 +256,7 @@ class TestAPITest extends TestCase
         $response->assertStatus(422);
     }
 
-    /** @test */
+    /** @test - API не дает отправить ответы дважды */
     public function api_cannot_submit_twice()
     {
         Sanctum::actingAs($this->user);

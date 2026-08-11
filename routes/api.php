@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TestController;
+use App\Http\Controllers\Admin\QuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +40,6 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-
 Route::middleware('auth:sanctum')->group(function () {
 
     // Получить текущего пользователя
@@ -45,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-// ТЕСТЫ
+    //тесты
     Route::get('/tests', function () {
         $tests = \App\Models\Test::where('is_published', true)
             ->withCount('questions')
@@ -347,4 +349,23 @@ Route::middleware('auth:sanctum')->group(function () {
             ],
         ]);
     });
+});
+
+//API
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    // Статистика
+    Route::get('/statistics', [DashboardController::class, 'apiStatistics']);
+    Route::get('/tests/{test}/statistics', [DashboardController::class, 'apiTestStats']);
+    // Управление тестами
+    Route::get('/tests', [TestController::class, 'apiIndex']);
+    Route::post('/tests', [TestController::class, 'apiStore']);
+    Route::get('/tests/{test}', [TestController::class, 'apiShow']);
+    Route::put('/tests/{test}', [TestController::class, 'apiUpdate']);
+    Route::delete('/tests/{test}', [TestController::class, 'apiDestroy']);
+    // Управление вопросами
+    Route::get('/tests/{test}/questions', [QuestionController::class, 'apiIndex']);
+    Route::post('/tests/{test}/questions', [QuestionController::class, 'apiStore']);
+    Route::put('/questions/{question}', [QuestionController::class, 'apiUpdate']);
+    Route::delete('/questions/{question}', [QuestionController::class, 'apiDestroy']);
+    Route::post('/questions/reorder', [QuestionController::class, 'apiReorder']);
 });
