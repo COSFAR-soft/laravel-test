@@ -78,26 +78,6 @@ class DashboardController extends Controller
         return view('admin.dashboard.test-stats', compact('test', 'results', 'stats'));
     }
 
-    public function userStats(User $user)
-    {
-        $results = TestResult::where('user_id', $user->id)
-            ->whereNotNull('completed_at')
-            ->with('test')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
-
-        $stats = [
-            'total' => $results->total(),
-            'passed' => $results->getCollection()->filter(function ($r) {
-                return $r->is_passed;
-            })->count(),
-            'avg_score' => round($results->avg('score') ?? 0, 1),
-            'max_score' => $results->max('score') ?? 0,
-        ];
-
-        return view('admin.dashboard.user-stats', compact('user', 'results', 'stats'));
-    }
-
     /**
      * Просмотр результата теста конкретного пользователя
      */
