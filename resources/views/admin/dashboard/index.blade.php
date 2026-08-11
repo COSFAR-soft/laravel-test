@@ -65,8 +65,45 @@
         </div>
     </div>
 
+    {{-- echart --}}
     <div class="row g-4 mb-4">
+        {{-- График 1: Распределение результатов (Pie) --}}
+        <div class="col-md-6 d-flex">
+            <div class="card w-100">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Распределение результатов</h6>
+                </div>
+                <div class="card-body">
+                    <div id="resultDistributionChart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
 
+        {{-- График 2: Статистика по тестам (Bar) --}}
+        <div class="col-md-6 d-flex">
+            <div class="card w-100">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Топ тестов по прохождениям</h6>
+                </div>
+                <div class="card-body">
+                    <div id="topTestsChart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- График 3: Распределение баллов --}}
+    <div class="row g-4 mb-4">
+        <div class="col-12 d-flex">
+            <div class="card w-100">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart-steps"></i> Распределение набранных баллов</h6>
+                </div>
+                <div class="card-body">
+                    <div id="scoreDistributionChart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row g-4">
@@ -87,7 +124,7 @@
                                     </div>
                                     <div>
                                         <span class="badge bg-info">{{ $test->results_count }} прохождений</span>
-                                        {!! $test->is_published ? '' : '<span class="badge bg-secondary">Черновик </span>' !!}
+                                        {!! $test->is_published ? '' : '<span class="badge bg-secondary">Черновик</span>' !!}
                                     </div>
                                 </div>
                             </a>
@@ -136,5 +173,178 @@
 @endsection
 
 @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Распределение результатов (Pie)
+            var resultChart = echarts.init(document.getElementById('resultDistributionChart'));
+            var resultOption = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    data: ['Пройдено', 'Не пройдено']
+                },
+                series: [
+                    {
+                        name: 'Результаты',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{d}%'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 18,
+                                fontWeight: 'bold'
+                            }
+                        },
+                        data: [
+                            { value: {{ $passedCount }}, name: 'Пройдено', itemStyle: { color: '#28a745' } },
+                            { value: {{ $failedCount }}, name: 'Не пройдено', itemStyle: { color: '#dc3545' } }
+                        ]
+                    }
+                ]
+            };
+            resultChart.setOption(resultOption);
 
+            // Топ тестов по прохождениям (Bar)
+            var topTestsChart = echarts.init(document.getElementById('topTestsChart'));
+            var topTestsData = @json($allTests->take(10)->map(function($test) {
+            return [
+                'title' => Str::limit($test->title, 20),
+                'count' => $test->results_count
+            ];
+        }));
+
+            var topTestsOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: function(params) {
+                        return '<strong>' + params[0].name + '</strong><br/>Прохождений: ' + params[0].value;
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: topTestsData.map(function(item) { return item.title; }),
+                    axisLabel: {
+                        rotate: 30,
+                        interval: 0,
+                        fontSize: 11
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'Количество прохождений'
+                },
+                series: [
+                    {
+                        name: 'Прохождения',
+                        type: 'bar',
+                        data: topTestsData.map(function(item) {
+                            return {
+                                value: item.count,
+                                itemStyle: {
+                                    color: item.count > 0 ? '#0d6efd' : '#6c757d',
+                                    borderRadius: [4, 4, 0, 0]
+                                }
+                            };
+                        }),
+                        barWidth: '40%'
+                    }
+                ]
+            };
+            topTestsChart.setOption(topTestsOption);
+
+            // Распределение баллов (Histogram)
+            var scoreChart = echarts.init(document.getElementById('scoreDistributionChart'));
+
+            // Группировка баллов по диапазонам
+            var scoreRanges = {
+                '0-20%': 0,
+                '21-40%': 0,
+                '41-60%': 0,
+                '61-80%': 0,
+                '81-100%': 0
+            };
+
+            @foreach($recentResults as $result)
+            var score = {{ $result->score ?? 0 }};
+            if (score <= 20) scoreRanges['0-20%']++;
+            else if (score <= 40) scoreRanges['21-40%']++;
+            else if (score <= 60) scoreRanges['41-60%']++;
+            else if (score <= 80) scoreRanges['61-80%']++;
+            else scoreRanges['81-100%']++;
+            @endforeach
+
+            var scoreOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: function(params) {
+                        return '<strong>' + params[0].name + '</strong><br/>Количество: ' + params[0].value;
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: Object.keys(scoreRanges),
+                    axisLabel: {
+                        fontSize: 12
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'Количество пользователей'
+                },
+                series: [
+                    {
+                        name: 'Распределение баллов',
+                        type: 'bar',
+                        data: Object.values(scoreRanges).map(function(value, index) {
+                            var colors = ['#dc3545', '#fd7e14', '#ffc107', '#0d6efd', '#28a745'];
+                            return {
+                                value: value,
+                                itemStyle: {
+                                    color: colors[index],
+                                    borderRadius: [4, 4, 0, 0]
+                                }
+                            };
+                        }),
+                        barWidth: '50%'
+                    }
+                ]
+            };
+            scoreChart.setOption(scoreOption);
+
+            window.addEventListener('resize', function() {
+                resultChart.resize();
+                topTestsChart.resize();
+                scoreChart.resize();
+            });
+        });
+    </script>
 @endpush
