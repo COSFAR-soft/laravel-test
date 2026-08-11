@@ -21,9 +21,7 @@ class DashboardController extends Controller
 
         // Статистика по прохождениям (проценты)
         $allResults = TestResult::whereNotNull('completed_at')->get();
-        $avgScore = $allResults->avg(function ($result) {
-            return $result->percentage;
-        }) ?? 0;
+        $avgScore = $allResults->avg('score') ?? 0;
 
 
         $passedCount = $allResults->filter(function ($result) {

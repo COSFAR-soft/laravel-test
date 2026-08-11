@@ -76,14 +76,7 @@ class TestResult extends Model
      */
     public function getScorePercentageAttribute()
     {
-        if (!$this->test) {
-            return 0;
-        }
-        $totalPoints = $this->test->questions->sum('points');
-        if ($totalPoints == 0) {
-            return 0;
-        }
-        return round(($this->score / $totalPoints) * 100);
+        return $this->score;
     }
 
     /**
@@ -91,7 +84,7 @@ class TestResult extends Model
      */
     public function getIsPassedAttribute()
     {
-        return $this->score_percentage >= $this->test->passing_score;
+        return $this->score >= $this->test->passing_score;
     }
 
     /**
