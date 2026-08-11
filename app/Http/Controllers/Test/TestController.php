@@ -271,18 +271,25 @@ class TestController extends Controller
      */
     public function history()
     {
-        $results = TestResult::where('user_id', Auth::id())
-            ->whereNotNull('completed_at')
+        $results = auth()->user()
+            ->results()
             ->with('test')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('completed_at', 'desc')
             ->paginate(15);
 
+        $allResults = auth()->user()
+            ->results()
+            ->with('test')
+            ->get();
+
+        $passed = $allResults->filter(function ($result) {
+            return $result->is_passed;
+        })->count();
+
         $stats = [
-            'total' => $results->total(),
-            'passed' => $results->filter(function ($result) {
-                return $result->is_passed;
-            })->count(),
-            'avg_score' => $results->avg('score') ?? 0,
+            'total' => $allResults->count(),
+            'passed' => $passed,
+            'avg_score' => round($allResults->avg('score')) ?? 0,
         ];
 
         return view('tests.history', compact('results', 'stats'));
