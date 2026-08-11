@@ -30,7 +30,7 @@ class TestController extends Controller
             'description' => 'nullable|string',
             'time_limit' => 'required|integer|min:1|max:180',
             'passing_score' => 'required|integer|min:0|max:100',
-            'is_published' => 'boolean',
+            'is_published' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -44,7 +44,7 @@ class TestController extends Controller
             'description' => $request->description,
             'time_limit' => $request->time_limit,
             'passing_score' => $request->passing_score,
-            'is_published' => $request->has('is_published'),
+            'is_published' => $request->has('is_published') && $request->is_published == '1',
         ]);
 
         return redirect()->route('admin.tests.constructor', $test)

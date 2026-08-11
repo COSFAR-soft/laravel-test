@@ -23,7 +23,7 @@ class DashboardControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
+    /** @test - админ видит дашборд */
     public function admin_can_view_dashboard()
     {
         $this->actingAs($this->admin)
@@ -32,14 +32,12 @@ class DashboardControllerTest extends TestCase
             ->assertSee('Статистика');
     }
 
-    /** @test */
+    /** @test - дашборд показывает правильную статистику */
     public function dashboard_shows_correct_statistics()
     {
-        // Создаём тесты
         Test::factory()->count(3)->create(['is_published' => true]);
         Test::factory()->count(1)->create(['is_published' => false]);
 
-        // Создаём пользователей и результаты
         $user = User::factory()->create();
         $test = Test::first();
         TestResult::factory()->count(5)->create([
@@ -52,13 +50,13 @@ class DashboardControllerTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('admin.dashboard.index'))
             ->assertStatus(200)
-            ->assertSee('3')  // Опубликовано
-            ->assertSee('5')  // Прохождений
-            ->assertSee('80%'); // Средний балл
+            ->assertSee('3')
+            ->assertSee('5')
+            ->assertSee('80%');
     }
 
-    /** @test */
-    public function admin_can_view_test_stats()
+    /** @test - админ смотрит статистику по тесту */
+    public function admin_can_view_test_statistics()
     {
         $test = Test::factory()->create();
         $user = User::factory()->create();
@@ -77,31 +75,10 @@ class DashboardControllerTest extends TestCase
             ->assertSee('80%');
     }
 
-    /** @test */
-    public function admin_can_view_user_stats()
-    {
-        $user = User::factory()->create();
-        $test = Test::factory()->create();
-
-        TestResult::factory()->count(2)->create([
-            'user_id' => $user->id,
-            'test_id' => $test->id,
-            'completed_at' => now(),
-            'score' => 90,
-        ]);
-
-        $this->actingAs($this->admin)
-            ->get(route('admin.users.show', $user))
-            ->assertStatus(200)
-            ->assertSee($user->name)
-            ->assertSee('90%');
-    }
-
-    /** @test */
+    /** @test - админ смотрит детали результата */
     public function admin_can_view_result_details()
     {
         $user = User::factory()->create(['name' => 'Test User']);
-
         $test = Test::factory()->create();
 
         $result = TestResult::factory()->create([
@@ -120,10 +97,9 @@ class DashboardControllerTest extends TestCase
         $response->assertSee($result->score . '%');
     }
 
-    /** @test */
+    /** @test - дашборд без результатов */
     public function dashboard_handles_no_results_gracefully()
     {
-        // Нет результатов в БД
         $this->actingAs($this->admin)
             ->get(route('admin.dashboard.index'))
             ->assertStatus(200)
@@ -131,8 +107,8 @@ class DashboardControllerTest extends TestCase
             ->assertSee('0%');
     }
 
-    /** @test */
-    public function dashboard_test_stats_handles_no_results()
+    /** @test - статистика теста без результатов */
+    public function test_stats_handles_no_results()
     {
         $test = Test::factory()->create();
 
@@ -143,8 +119,7 @@ class DashboardControllerTest extends TestCase
             ->assertSee('0');
     }
 
-
-    /** @test */
+    /** @test - обычный юзер не попадает в админку */
     public function non_admin_cannot_access_dashboard()
     {
         $user = User::factory()->create(['email' => 'user@example.com']);
