@@ -6,11 +6,11 @@
 <div class="text-center">
     {{-- Процент баллов --}}
     <div class="display-3 fw-bold mb-2">
-        {{ $result->score }}%
+        {{ $result->percentage  }}%
     </div>
     <div class="text-muted mb-3">
         <i class="bi bi-star-fill text-warning"></i>
-        {{ $result->score }}% / {{ $test->questions->sum('points') }} баллов
+        {{ $result->percentage  }}% / {{ $test->questions->sum('points') }} баллов
     </div>
 
     {{-- Статус --}}

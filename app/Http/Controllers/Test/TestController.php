@@ -10,11 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * Class TestController
- *
  * Публичный контроллер для прохождения тестов пользователями
  * Работа с сессией пользователя
  * подсчет результатов и отображение страниц
- *
  * @package App\Http\Controllers\Test
  */
 class TestController extends Controller
@@ -145,9 +143,9 @@ class TestController extends Controller
                     $earnedPoints += $question->points;
                 }
             } else {
-                $correctIds = $question->answers
+                $correctTexts = $question->answers
                     ->where('is_correct', true)
-                    ->pluck('id')
+                    ->pluck('answer_text')
                     ->sort()
                     ->values()
                     ->toArray();
@@ -160,16 +158,25 @@ class TestController extends Controller
                     $userAnswer = [$userAnswer];
                 }
 
-                $userIds = collect($userAnswer)->map('intval')->sort()->values()->toArray();
+                $userTexts = collect($userAnswer)
+                    ->map(function ($id) use ($question) {
+                        $answer = $question->answers->find($id);
+                        return $answer ? $answer->answer_text : null;
+                    })
+                    ->filter()
+                    ->sort()
+                    ->values()
+                    ->toArray();
 
-                if ($correctIds === $userIds) {
+                if ($correctTexts === $userTexts) {
                     $correctCount++;
                     $earnedPoints += $question->points;
                 }
             }
         }
 
-        $score = $result->total_questions > 0 ? round(($correctCount / $result->total_questions) * 100) : 0;
+        $totalPoints = $test->questions->sum('points');
+        $score = $totalPoints > 0 ? round(($earnedPoints / $totalPoints) * 100) : 0;
 
         $result->update([
             'correct_answers' => $correctCount,
@@ -207,31 +214,32 @@ class TestController extends Controller
                 }
             } else {
                 // Для множественного выбора проверяем по тексту (ломается на ID из-за перемешивания)
-                $correctIds = $question->answers
+                $correctTexts = $question->answers
                     ->where('is_correct', true)
-                    ->pluck('id')
+                    ->pluck('answer_text')
                     ->sort()
                     ->values()
                     ->toArray();
 
-                if (empty($userAnswer)) {
-                    continue;
-                }
+                $userTexts = collect($userAnswer)
+                    ->map(function ($id) use ($question) {
+                        $answer = $question->answers->find($id);
+                        return $answer ? $answer->answer_text : null;
+                    })
+                    ->filter()
+                    ->sort()
+                    ->values()
+                    ->toArray();
 
-                if (!is_array($userAnswer)) {
-                    $userAnswer = [$userAnswer];
-                }
-
-                $userIds = collect($userAnswer)->map('intval')->sort()->values()->toArray();
-
-                if ($correctIds === $userIds) {
+                if ($correctTexts === $userTexts) {
                     $correctCount++;
                     $earnedPoints += $question->points;
                 }
             }
         }
 
-        $score = $result->total_questions > 0 ? round(($correctCount / $result->total_questions) * 100) : 0;
+        $totalPoints = $test->questions->sum('points');
+        $score = $totalPoints > 0 ? round(($earnedPoints / $totalPoints) * 100) : 0;
 
         $result->update([
             'correct_answers' => $correctCount,
