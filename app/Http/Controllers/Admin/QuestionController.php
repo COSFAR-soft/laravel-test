@@ -215,4 +215,136 @@ class QuestionController extends Controller
             'html' => $html
         ]);
     }
+
+    // API МЕТОДЫ
+    public function apiIndex(Test $test)
+    {
+        $questions = $test->questions()
+            ->with('answers')
+            ->orderBy('order')
+            ->get();
+
+        return response()->json($questions);
+    }
+
+    public function apiStore(Request $request, Test $test)
+    {
+        $validator = Validator::make($request->all(), [
+            'question_text' => 'required|string|max:1000',
+            'type' => 'required|in:single,multiple',
+            'points' => 'required|integer|min:1|max:100',
+            'answers' => 'required|array|min:1',
+            'answers.*.text' => 'required|string|max:500',
+            'answers.*.is_correct' => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $hasCorrect = collect($request->answers)->contains('is_correct', true);
+        if (!$hasCorrect) {
+            return response()->json([
+                'errors' => ['answers' => ['Должен быть хотя бы один правильный ответ']],
+            ], 422);
+        }
+
+        $question = Question::create([
+            'test_id' => $test->id,
+            'question_text' => $request->question_text,
+            'type' => $request->type,
+            'points' => $request->points,
+            'order' => $test->questions()->max('order') + 1,
+        ]);
+
+        foreach ($request->answers as $answerData) {
+            Answer::create([
+                'question_id' => $question->id,
+                'answer_text' => $answerData['text'],
+                'is_correct' => $answerData['is_correct'] ?? false,
+            ]);
+        }
+
+        return response()->json([
+            'data' => $question->load('answers'),
+            'message' => 'Вопрос создан',
+        ], 201);
+    }
+
+    public function apiUpdate(Request $request, Question $question)
+    {
+        $validator = Validator::make($request->all(), [
+            'question_text' => 'required|string',
+            'type' => 'required|in:single,multiple',
+            'points' => 'required|integer|min:1',
+            'answers' => 'required|array|min:1',
+            'answers.*.text' => 'required|string',
+            'answers.*.is_correct' => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $question->update([
+            'question_text' => $request->question_text,
+            'type' => $request->type,
+            'points' => $request->points,
+        ]);
+
+        $existingIds = $question->answers->pluck('id')->toArray();
+        $newIds = [];
+
+        foreach ($request->answers as $answerData) {
+            if (isset($answerData['id']) && in_array($answerData['id'], $existingIds)) {
+                $answer = Answer::find($answerData['id']);
+                $answer->update([
+                    'answer_text' => $answerData['text'],
+                    'is_correct' => $answerData['is_correct'] ?? false,
+                ]);
+                $newIds[] = $answerData['id'];
+            } else {
+                $answer = Answer::create([
+                    'question_id' => $question->id,
+                    'answer_text' => $answerData['text'],
+                    'is_correct' => $answerData['is_correct'] ?? false,
+                ]);
+                $newIds[] = $answer->id;
+            }
+        }
+
+        $toDelete = array_diff($existingIds, $newIds);
+        Answer::whereIn('id', $toDelete)->delete();
+
+        return response()->json([
+            'data' => $question->fresh()->load('answers'),
+            'message' => 'Вопрос обновлен',
+        ]);
+    }
+
+    public function apiDestroy(Question $question)
+    {
+        $question->delete();
+
+        return response()->json(['message' => 'Вопрос удален']);
+    }
+
+    public function apiReorder(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'questions' => 'required|array',
+            'questions.*.id' => 'required|exists:questions,id',
+            'questions.*.order' => 'required|integer|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        foreach ($request->questions as $item) {
+            Question::where('id', $item['id'])->update(['order' => $item['order']]);
+        }
+
+        return response()->json(['message' => 'Порядок обновлен']);
+    }
 }

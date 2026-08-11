@@ -88,4 +88,52 @@ class DashboardController extends Controller
 
         return view('admin.dashboard.result-view', compact('result', 'test', 'user'));
     }
+
+
+    // API МЕТОДЫ
+    public function apiStatistics()
+    {
+        $totalTests = Test::count();
+        $publishedTests = Test::where('is_published', true)->count();
+        $totalUsers = User::count();
+        $totalAttempts = TestResult::count();
+        $completedAttempts = TestResult::whereNotNull('completed_at')->count();
+
+        $allResults = TestResult::whereNotNull('completed_at')->get();
+        $avgScore = $allResults->avg('score') ?? 0;
+        $passedCount = $allResults->filter(fn($r) => $r->is_passed)->count();
+        $failedCount = $completedAttempts - $passedCount;
+
+        return response()->json([
+            'data' => [
+                'total_tests' => $totalTests,
+                'published_tests' => $publishedTests,
+                'total_users' => $totalUsers,
+                'total_attempts' => $totalAttempts,
+                'completed_attempts' => $completedAttempts,
+                'avg_score' => round($avgScore, 1),
+                'passed_count' => $passedCount,
+                'failed_count' => $failedCount,
+            ],
+        ]);
+    }
+
+    public function apiTestStats(Test $test)
+    {
+        $results = TestResult::where('test_id', $test->id)
+            ->whereNotNull('completed_at')
+            ->get();
+
+        return response()->json([
+            'data' => [
+                'total_attempts' => $results->count(),
+                'completed_attempts' => $results->count(),
+                'avg_score' => round($results->avg('score') ?? 0, 1),
+                'max_score' => $results->max('score') ?? 0,
+                'min_score' => $results->min('score') ?? 0,
+                'passed_count' => $results->filter(fn($r) => $r->is_passed)->count(),
+                'failed_count' => $results->filter(fn($r) => !$r->is_passed)->count(),
+            ],
+        ]);
+    }
 }

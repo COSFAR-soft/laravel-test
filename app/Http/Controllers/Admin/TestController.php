@@ -100,4 +100,94 @@ class TestController extends Controller
 
         return view('admin.tests.constructor', compact('test', 'questions'));
     }
+
+    // API МЕТОДЫ
+    public function apiIndex()
+    {
+        $tests = Test::withCount('questions')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return response()->json([
+            'data' => $tests->items(),
+            'meta' => [
+                'total' => $tests->total(),
+                'current_page' => $tests->currentPage(),
+                'last_page' => $tests->lastPage(),
+            ],
+        ]);
+    }
+
+    public function apiStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'time_limit' => 'required|integer|min:1|max:180',
+            'passing_score' => 'required|integer|min:0|max:100',
+            'is_published' => 'sometimes|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $test = Test::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'time_limit' => $request->time_limit,
+            'passing_score' => $request->passing_score,
+            'is_published' => $request->has('is_published') && $request->is_published == '1',
+        ]);
+
+        return response()->json([
+            'data' => $test,
+            'message' => 'Тест создан',
+        ], 201);
+    }
+
+    public function apiShow(Test $test)
+    {
+        $test->load('questions.answers');
+
+        $data = $test->toArray();
+        $data['questions_count'] = $test->questions->count();
+
+        return response()->json(['data' => $data]);
+    }
+
+    public function apiUpdate(Request $request, Test $test)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'time_limit' => 'required|integer|min:1|max:180',
+            'passing_score' => 'required|integer|min:0|max:100',
+            'is_published' => 'sometimes|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $test->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'time_limit' => $request->time_limit,
+            'passing_score' => $request->passing_score,
+            'is_published' => $request->has('is_published') && $request->is_published == '1',
+        ]);
+
+        return response()->json([
+            'data' => $test,
+            'message' => 'Тест обновлен',
+        ]);
+    }
+
+    public function apiDestroy(Test $test)
+    {
+        $test->delete();
+
+        return response()->json(['message' => 'Тест удален']);
+    }
 }
