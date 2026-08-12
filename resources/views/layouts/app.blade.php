@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Laravel') }} @yield('title', '')</title>
+    <meta name="description" content="@yield('description', 'Платформа для тестирования знаний по Laravel')">
+    <meta name="keywords" content="laravel, тестирование, обучение, вопросы, ответы">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="{{ config('app.name', 'Laravel') }}">
+    <meta property="og:description" content="Платформа для тестирования знаний по Laravel">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }}">
+
+    <link rel="canonical" href="{{ url()->current() }}">
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
