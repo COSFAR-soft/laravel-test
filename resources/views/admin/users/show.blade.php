@@ -75,7 +75,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>Тест</th>
-                        <th class="text-center">Баллы</th>
+                        <th class="text-center">Процент</th>
                         <th class="text-center">Правильных</th>
                         <th class="text-center">Статус</th>
                         <th class="text-center">Время</th>
