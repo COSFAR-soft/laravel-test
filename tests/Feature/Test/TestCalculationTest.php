@@ -32,6 +32,7 @@ class TestCalculationTest extends TestCase
         ]);
     }
 
+    /** 5 вопросов с ответами */
     private function createQuestionsWithAnswers($testId, $correctCount)
     {
         for ($i = 1; $i <= 5; $i++) {
@@ -43,14 +44,12 @@ class TestCalculationTest extends TestCase
                 'order' => $i,
             ]);
 
-            // Правильный ответ
             Answer::create([
                 'question_id' => $question->id,
                 'answer_text' => "Правильный ответ {$i}",
                 'is_correct' => true,
             ]);
 
-            // Неправильный ответ
             Answer::create([
                 'question_id' => $question->id,
                 'answer_text' => "Неправильный ответ {$i}",
@@ -59,14 +58,13 @@ class TestCalculationTest extends TestCase
         }
     }
 
-    /** @test */
+    /** @test - одиночный выбор: 3 из 5 = 60% */
     public function test_score_calculation_for_single_choice()
     {
         $this->createQuestionsWithAnswers($this->test->id, 5);
 
         $questions = $this->test->questions;
 
-        // Начинаем тест
         $result = TestResult::create([
             'user_id' => $this->user->id,
             'test_id' => $this->test->id,
@@ -77,19 +75,16 @@ class TestCalculationTest extends TestCase
             'started_at' => now(),
         ]);
 
-        // Отправляем ответы (3 правильных из 5)
         $userAnswers = [];
         foreach ($questions->take(3) as $question) {
             $correct = $question->answers->where('is_correct', true)->first();
             $userAnswers[$question->id] = $correct->id;
         }
-        // Неправильные ответы на оставшиеся 2
         foreach ($questions->slice(3) as $question) {
             $wrong = $question->answers->where('is_correct', false)->first();
             $userAnswers[$question->id] = $wrong->id;
         }
 
-        // Вызываем логику подсчета
         $score = $this->calculateScore($this->test, $userAnswers);
         $percentage = round(($score / 5) * 100);
 
@@ -115,12 +110,11 @@ class TestCalculationTest extends TestCase
         return $correctCount;
     }
 
-    /** @test */
+    /** @test - проходной балл: 60% не проходит, 80% проходит */
     public function test_passing_score_check()
     {
         $this->createQuestionsWithAnswers($this->test->id, 5);
 
-        // Тест с проходным баллом 70%
         $testWithPassingScore = Test::create([
             'title' => 'Тест с проходным баллом',
             'description' => 'Проверка проходного балла',
@@ -129,7 +123,6 @@ class TestCalculationTest extends TestCase
             'is_published' => true,
         ]);
 
-        // Копируем вопросы
         foreach ($this->test->questions as $question) {
             $newQuestion = $question->replicate();
             $newQuestion->test_id = $testWithPassingScore->id;
@@ -142,23 +135,20 @@ class TestCalculationTest extends TestCase
             }
         }
 
-        // Сценарий 1: 3 правильных из 5 (60%) - НЕ ПРОЙДЕН
         $score1 = 3;
         $percentage1 = round(($score1 / 5) * 100);
         $isPassed1 = $percentage1 >= $testWithPassingScore->passing_score;
         $this->assertFalse($isPassed1);
 
-        // Сценарий 2: 4 правильных из 5 (80%) - ПРОЙДЕН
         $score2 = 4;
         $percentage2 = round(($score2 / 5) * 100);
         $isPassed2 = $percentage2 >= $testWithPassingScore->passing_score;
         $this->assertTrue($isPassed2);
     }
 
-    /** @test */
+    /** @test - множественный выбор: все правильные = true, частично = false */
     public function test_multiple_choice_calculation()
     {
-        // Создаем вопрос с множественным выбором
         $question = Question::create([
             'test_id' => $this->test->id,
             'question_text' => 'Выберите правильные варианты',
@@ -185,19 +175,15 @@ class TestCalculationTest extends TestCase
             'is_correct' => false,
         ]);
 
-        // Сценарий: выбраны все правильные
         $userAnswers = [
             $question->id => [$correct1->id, $correct2->id],
         ];
-
         $result = $this->checkMultipleChoice($question, $userAnswers);
         $this->assertTrue($result);
 
-        // Сценарий: выбраны не все правильные
         $userAnswers = [
             $question->id => [$correct1->id],
         ];
-
         $result = $this->checkMultipleChoice($question, $userAnswers);
         $this->assertFalse($result);
     }

@@ -51,7 +51,7 @@ class TestPageTest extends TestCase
         ]);
     }
 
-    /** @test */
+    /** @test - главная страница показывает список тестов */
     public function test_page_displays_available_tests()
     {
         $response = $this->actingAs($this->user)
@@ -61,7 +61,7 @@ class TestPageTest extends TestCase
             ->assertSee($this->test->title);
     }
 
-    /** @test */
+    /** @test - если тестов нет, показывается сообщение */
     public function test_page_shows_guest_message_when_no_tests()
     {
         $this->test->delete();
@@ -73,7 +73,7 @@ class TestPageTest extends TestCase
             ->assertSee('Нет доступных тестов');
     }
 
-    /** @test */
+    /** @test - страница теста показывает информацию */
     public function test_show_page_displays_test_details()
     {
         $response = $this->actingAs($this->user)
@@ -85,7 +85,7 @@ class TestPageTest extends TestCase
             ->assertSee('70%');
     }
 
-    /** @test */
+    /** @test - старт теста создаёт запись в БД */
     public function test_start_starts_test_and_creates_result()
     {
         $response = $this->actingAs($this->user)
@@ -100,7 +100,7 @@ class TestPageTest extends TestCase
         ]);
     }
 
-    /** @test */
+    /** @test - страница прохождения показывает вопросы */
     public function test_take_page_shows_questions()
     {
         TestResult::create([
@@ -122,7 +122,7 @@ class TestPageTest extends TestCase
             ->assertSee('PHP фреймворк');
     }
 
-    /** @test */
+    /** @test - если нет результата, страница прохождения 404 */
     public function test_take_page_redirects_if_no_result()
     {
         $response = $this->actingAs($this->user)
@@ -131,7 +131,7 @@ class TestPageTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /** @test */
+    /** @test - отправка ответов правильно считает результат */
     public function test_submit_calculates_score_correctly()
     {
         $result = TestResult::create([
@@ -163,7 +163,7 @@ class TestPageTest extends TestCase
         ]);
     }
 
-    /** @test */
+    /** @test - страница результатов показывает итог */
     public function test_results_page_shows_result()
     {
         TestResult::create([
@@ -185,7 +185,7 @@ class TestPageTest extends TestCase
             ->assertSee('Тест пройден!');
     }
 
-    /** @test */
+    /** @test - история показывает результаты пользователя */
     public function test_history_page_displays_user_results()
     {
         TestResult::create([
@@ -208,7 +208,7 @@ class TestPageTest extends TestCase
             ->assertSee('100%');
     }
 
-    /** @test */
+    /** @test - неавторизованный не имеет доступа к тестам */
     public function unauthorized_users_cannot_access_test_pages()
     {
         $response = $this->get(route('tests.index'));

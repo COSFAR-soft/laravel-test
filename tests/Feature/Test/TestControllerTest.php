@@ -29,14 +29,9 @@ class TestControllerTest extends TestCase
         ]);
     }
 
-    // ============================================
-    // AUTO SUBMIT (ИСТЕЧЕНИЕ ВРЕМЕНИ)
-    // ============================================
-
-    /** @test */
+    /** @test - авто-завершение теста при истечении времени (одиночный выбор) */
     public function test_auto_submit_when_time_expires()
     {
-        // Создаём вопросы с ответами
         $question = Question::factory()->create([
             'test_id' => $this->test->id,
             'type' => 'single',
@@ -52,7 +47,6 @@ class TestControllerTest extends TestCase
             'is_correct' => false,
         ]);
 
-        // Создаём результат с истекшим временем
         $result = TestResult::factory()->create([
             'user_id' => $this->user->id,
             'test_id' => $this->test->id,
@@ -60,7 +54,7 @@ class TestControllerTest extends TestCase
             'correct_answers' => 0,
             'score' => 0,
             'answers' => [$question->id => $correctAnswer->id],
-            'started_at' => now()->subMinutes(60), // 60 минут назад (время вышло)
+            'started_at' => now()->subMinutes(60),
             'completed_at' => null,
         ]);
 
@@ -76,10 +70,9 @@ class TestControllerTest extends TestCase
         $this->assertEquals(100, $result->score);
     }
 
-    /** @test */
+    /** @test - авто-завершение с множественным выбором */
     public function test_auto_submit_with_multiple_choice_questions()
     {
-        // Создаём вопрос с множественным выбором
         $question = Question::factory()->create([
             'test_id' => $this->test->id,
             'type' => 'multiple',
@@ -99,7 +92,6 @@ class TestControllerTest extends TestCase
             'is_correct' => false,
         ]);
 
-        // Создаём результат с истекшим временем
         $result = TestResult::factory()->create([
             'user_id' => $this->user->id,
             'test_id' => $this->test->id,
@@ -123,11 +115,7 @@ class TestControllerTest extends TestCase
         $this->assertEquals(100, $result->score);
     }
 
-    // ============================================
-    // SUBMIT С МНОЖЕСТВЕННЫМ ВЫБОРОМ
-    // ============================================
-
-    /** @test */
+    /** @test - отправка правильных ответов (множественный выбор) */
     public function test_submit_multiple_choice_correct()
     {
         $question = Question::factory()->create([
@@ -174,7 +162,7 @@ class TestControllerTest extends TestCase
         $this->assertEquals(100, $result->score);
     }
 
-    /** @test */
+    /** @test - отправка частично правильных ответов (множественный выбор) */
     public function test_submit_multiple_choice_partially_correct()
     {
         $question = Question::factory()->create([
@@ -207,7 +195,6 @@ class TestControllerTest extends TestCase
             'completed_at' => null,
         ]);
 
-        // Пользователь выбрал только один правильный ответ
         $response = $this->actingAs($this->user)
             ->post(route('tests.submit', $this->test), [
                 'answers' => [
