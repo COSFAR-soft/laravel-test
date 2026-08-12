@@ -15,36 +15,34 @@ import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
 // Проверка загрузки
-console.log('✅ Vite + jQuery + Bootstrap работает!');
-console.log('📦 jQuery version:', $.fn.jquery);
-try {
+// try {
     // Проверяем через импортированный объект
-    console.log('📦 Bootstrap version:', bootstrap?.version || 'unknown');
+    // console.log('Bootstrap version:', bootstrap?.version || 'unknown');
 
     //  через window
-    console.log('📦 Bootstrap (window):', window.bootstrap?.version || 'unknown');
+    // console.log('Bootstrap (window):', window.bootstrap?.version || 'unknown');
 
     // Проверяем, что компоненты доступны
-    console.log('📦 Bootstrap components:', {
-        Modal: typeof bootstrap.Modal !== 'undefined',
-        Tooltip: typeof bootstrap.Tooltip !== 'undefined',
-        Popover: typeof bootstrap.Popover !== 'undefined',
-        Dropdown: typeof bootstrap.Dropdown !== 'undefined'
-    });
-} catch (e) {
-    console.warn('⚠️ Bootstrap не загружен:', e.message);
-}
+    // console.log('Bootstrap components:', {
+    //     Modal: typeof bootstrap.Modal !== 'undefined',
+    //     Tooltip: typeof bootstrap.Tooltip !== 'undefined',
+    //     Popover: typeof bootstrap.Popover !== 'undefined',
+    //     Dropdown: typeof bootstrap.Dropdown !== 'undefined'
+    // });
+// } catch (e) {
+    // console.warn('Bootstrap не загружен:', e.message);
+// }
 
 
 
 $(document).ready(function() {
-    console.log('📄 DOM загружен');
+    // console.log('DOM загружен');
 
     // Инициализация Bootstrap компонентов
     initBootstrapComponents();
 
     // скрипты
-    initCustomScripts();
+    // initCustomScripts();
 });
 
 // Инициализация Bootstrap
@@ -61,56 +59,48 @@ function initBootstrapComponents() {
         return new bootstrap.Popover(popoverTriggerEl);
     });
 
-    console.log('Bootstrap компоненты инициализированы');
+    // console.log('Bootstrap компоненты инициализированы');
 }
 
 // скрипты
-function initCustomScripts() {
+// function initCustomScripts() {
     // Пример: Обработка форм
-    $('form').on('submit', function(e) {
-        console.log('Форма отправлена:', $(this).attr('id'));
-    });
+    // $('form').on('submit', function(e) {
+        // console.log('Форма отправлена:', $(this).attr('id'));
+    // });
 
     // Пример: AJAX запросы
-    $('.ajax-button').on('click', function() {
-        const $btn = $(this);
-        const url = $btn.data('url') || '/api/data';
-
-        $btn.prop('disabled', true).text('Загрузка...');
-
-        axios.get(url)
-            .then(function(response) {
-                console.log('Данные получены:', response.data);
-            })
-            .catch(function(error) {
-                console.error('Ошибка:', error);
-            })
-            .finally(function() {
-                $btn.prop('disabled', false).text('Готово');
-            });
-    });
+    // $('.ajax-button').on('click', function() {
+    //     const $btn = $(this);
+    //     const url = $btn.data('url') || '/api/data';
+    //
+    //     $btn.prop('disabled', true).text('Загрузка...');
+    //
+    //     axios.get(url)
+    //         .then(function(response) {
+    //             // console.log('Данные получены:', response.data);
+    //         })
+    //         // .catch(function(error) {
+    //             // console.error('Ошибка:', error);
+    //         // })
+    //         .finally(function() {
+    //             $btn.prop('disabled', false).text('Готово');
+    //         });
+    // });
 
     // Пример: Анимации
-    $('.fade-in').each(function(index) {
-        $(this).delay(100 * index).fadeIn(500);
-    });
+    // $('.fade-in').each(function(index) {
+    //     $(this).delay(100 * index).fadeIn(500);
+    // });
+// }
 
-    console.log('Кастомные скрипты загружены');
-}
-
-// ============================================
 // HMR (Hot Module Replacement)
-// ============================================
 if (import.meta.hot) {
     import.meta.hot.accept(() => {
-        console.log('HMR обновление!');
-        initCustomScripts();
+        // console.log('HMR обновление!');
+        // initCustomScripts();
     });
 }
-
-// ============================================
-// Полезные утилиты
-// ============================================
 
 //Утилита для показа уведомлений
 window.showNotification = function(message, type = 'info') {
@@ -193,4 +183,4 @@ window.serializeForm = function(formSelector) {
     return data;
 };
 
-console.log('✅ Все утилиты загружены!');
+// console.log('Все утилиты загружены!');
