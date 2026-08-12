@@ -42,7 +42,7 @@
         <div class="col-md-3 col-6">
             <div class="p-3 bg-light rounded">
                 <div class="small text-muted">Заработано баллов</div>
-                <div class="h4 mb-0 text-primary">{{ $test->questions->sum('points') }}</div>
+                <div class="h4 mb-0 text-primary">{{ $result->earned_points }}</div>
             </div>
         </div>
         <div class="col-md-3 col-6">

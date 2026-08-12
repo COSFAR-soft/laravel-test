@@ -97,4 +97,57 @@ class TestResult extends Model
         }
         return $this->started_at->diffInMinutes($this->completed_at);
     }
+
+    /**
+     * Полученные баллы
+     */
+    public function getEarnedPointsAttribute()
+    {
+        $earned = 0;
+
+        foreach ($this->test->questions as $question) {
+            $userAnswer = $this->answers[$question->id] ?? null;
+
+            if ($question->type === 'single') {
+                $correct = $question->answers->where('is_correct', true)->first();
+
+                if ($correct && (string) $userAnswer === (string) $correct->id) {
+                    $earned += $question->points;
+                }
+            } else {
+                // Множественный выбор
+                $correctIds = $question->answers
+                    ->where('is_correct', true)
+                    ->pluck('id')
+                    ->map(function ($id) {
+                        return (string) $id;
+                    })
+                    ->sort()
+                    ->values()
+                    ->toArray();
+
+                if (empty($userAnswer)) {
+                    continue;
+                }
+
+                if (!is_array($userAnswer)) {
+                    $userAnswer = [$userAnswer];
+                }
+
+                $userIds = collect($userAnswer)
+                    ->map(function ($id) {
+                        return (string) $id;
+                    })
+                    ->sort()
+                    ->values()
+                    ->toArray();
+
+                if ($correctIds === $userIds) {
+                    $earned += $question->points;
+                }
+            }
+        }
+
+        return $earned;
+    }
 }
