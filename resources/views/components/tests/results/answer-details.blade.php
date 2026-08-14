@@ -59,9 +59,9 @@
                 <tfoot class="table-light fw-bold">
                 <tr>
                     <td colspan="2" class="text-end">Итого:</td>
-                    <td class="text-center">{{ $test->questions->sum('points') }}</td>
+                    <td class="text-center">{{ $result->earned_points }}</td>
                     <td colspan="2" class="text-center">{{ $totalEarned }} баллов</td>
-                    <td class="text-center">{{ round(($totalEarned / max($test->questions->sum('points'), 1)) * 100) }}%</td>
+                    <td class="text-center">{{ $result->percentage  }}%</td>
                 </tr>
                 </tfoot>
             </table>
